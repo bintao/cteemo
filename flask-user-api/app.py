@@ -8,14 +8,14 @@ from profileAPI import ProfileAPI, ProfileIconAPI
 
 app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {
-    'db': 'flask-test',
-    'host': 'ds027741.mongolab.com',
-    'port': 27741,
-    'username': 'flask-admin',
-    'password': '123123'
+    'db': 'testdb',
+    'host': '54.149.235.253',
+    'port': 27017,
+    'username': 'dbuser',
+    'password': 'cteemo2015'
 }
 
-app.config['REDIS_URL'] = "redis://:123123@pub-redis-17784.us-east-1-2.1.ec2.garantiadata.com:17784/0"
+app.config['REDIS_URL'] = "redis://:cteemo2015@54.149.235.253:6379/0"
 
 db.init_app(app)
 bcrypt.init_app(app)
