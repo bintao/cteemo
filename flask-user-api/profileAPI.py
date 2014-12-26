@@ -27,17 +27,18 @@ def verify_auth_token(token):
 profileParser = reqparse.RequestParser()
 profileParser.add_argument('token', type=str)
 profileParser.add_argument('school', type=str)
-profileParser.add_argument('lolid', type=str)
-profileParser.add_argument('dotaid', type=str)
+profileParser.add_argument('lol_id', type=str)
+profileParser.add_argument('dota_id', type=str)
+profileParser.add_argument('hh_stone_id', type=str)
 
 class ProfileAPI(Resource):
     def get(self):
-    	args = profileParser.parse_args()
+        args = profileParser.parse_args()
         token = args['token']
 
         # verify token 
         if token is None:
-        	abort(400)
+            abort(400)
         email = verify_auth_token(token) 
         if email is None:
             abort(400)
@@ -45,46 +46,48 @@ class ProfileAPI(Resource):
         # load profile 
         profile =  Profile.objects(user_email=email)
         if profile.first() is None:
-        	return {}
+            return {}
 
         profile = profile.first()
         result = {}
         for key in profile:
-        	if key != "id":
-           	    result[key] = profile[key]
+            if key != "id":
+                result[key] = profile[key]
         return result
 
 
     def post(self):
-    	args = profileParser.parse_args()
+        args = profileParser.parse_args()
         token = args['token']
 
         # verify token 
         if token is None:
-        	abort(400)
+            abort(400)
         email = verify_auth_token(token) 
         if email is None:
             abort(400)
 
         school = args['school']
-        lol_id = args['lolid']
-        dota_id = args['dotaid']
+        lol_id = args['lol_id']
+        dota_id = args['dota_id']
+        hh_stone_id = args['hh_stone_id']
 
         profile = Profile.objects(user_email=email)
         if profile.first() is None:
-            profile = Profile(user_email=email, school=school, lol_id=lol_id, dota_id=dota_id)
+            profile = Profile(user_email=email, school=school, lol_id=lol_id, dota_id=dota_id, hh_stone_id=hh_stone_id)
             profile.save()
         else:
             profile = profile[0]
             profile.school = school
             profile.lol_id = lol_id
             profile.dota_id = dota_id
+            Profile.hh_stone_id = hh_stone_id
             profile.save()
        
         result = {}
         for key in profile:
-        	if key != "id":
-        		result[key] = profile[key]
+            if key != "id":
+                result[key] = profile[key]
         return result
 
 class ProfileIconAPI(Resource):

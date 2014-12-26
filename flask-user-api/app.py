@@ -7,6 +7,7 @@ from todoAPI import TodoAPI
 from profileAPI import ProfileAPI, ProfileIconAPI
 
 app = Flask(__name__)
+#The following code should be modified on server
 app.config['MONGODB_SETTINGS'] = {
     'db': 'testdb',
     'host': '54.149.235.253',
@@ -14,7 +15,6 @@ app.config['MONGODB_SETTINGS'] = {
     'username': 'dbuser',
     'password': 'cteemo2015'
 }
-
 app.config['REDIS_URL'] = "redis://:cteemo2015@54.149.235.253:6379/0"
 
 db.init_app(app)
@@ -32,7 +32,7 @@ api.add_resource(ProfileAPI, '/profile')
 api.add_resource(ProfileIconAPI, '/upload_profile_icon/<string:token>')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0')
 
 
 
