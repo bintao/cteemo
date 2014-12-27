@@ -81,7 +81,7 @@ class ProfileAPI(Resource):
             profile.school = school
             profile.lol_id = lol_id
             profile.dota_id = dota_id
-            Profile.hh_stone_id = hh_stone_id
+            profile.hh_stone_id = hh_stone_id
             profile.save()
        
         result = {}

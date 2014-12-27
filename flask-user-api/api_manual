@@ -15,3 +15,15 @@ curl localhost:5000/profile -X POST -d "token=from login api" -d "school=UIUC" -
 
 Upload Profile Icon 
 curl --form upload=@icon.png --form press=OK localhost:5000/upload_profile_icon/<string: token> -X POST
+
+Load Tournament
+curl localhost:5000/tournament -X GET -d "token=from login api"
+
+Create Tournament
+curl localhost:5000/tournament -X POST -d "token=from login api" -d "school=UIUC" -d "isSchool=1" -d "start_time=2014/12/29 18:00 CST" -d "end_time=2014/12/31 18:00 CST" 
+
+Create Team
+curl localhost:5000/create_team -X POST -d "token=from login" -d "school=UIUC" -d "isSchool=1" -d "team_name=uiuc"
+
+Delete Team
+curl localhost:5000/create_team -X DELETE -d "token=from login"

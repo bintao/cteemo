@@ -6,4 +6,5 @@ class Profile(db.Document):
 	school = db.StringField()
 	lol_id = db.StringField()
 	dota_id = db.StringField()
+	team = db.StringField()
 
