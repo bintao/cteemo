@@ -2,6 +2,7 @@ from flask import abort
 from flask.ext.restful import Resource, reqparse
 from mongoengine.errors import NotUniqueError, ValidationError
 from model.user import User
+from model.profile import Profile
 from model.redis import redis_store
 import requests 
 from itsdangerous import (TimedJSONWebSignatureSerializer
@@ -47,6 +48,8 @@ class UserAPI(Resource):
             return {'status': 'error', 'message': e.message}  
         except NotUniqueError, e:
             return {'status': 'error', 'message': e.message}
+        profile = Profile(email=email,username=username)
+        profile.save()
         token = user.generate_auth_token(expiration=360000)
         redis_store.set(user.email, token)
         return ({'status': 'success', 'token': token}, 201)

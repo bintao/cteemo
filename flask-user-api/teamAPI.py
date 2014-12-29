@@ -32,6 +32,9 @@ def verify_auth_token(token):
         return None
 
 class createTeamAPI(Resource):
+    def get(self):
+        pass
+        
     def post(self):
         args = profileParser.parse_args()
         token = args['token']
@@ -62,6 +65,7 @@ class createTeamAPI(Resource):
         team.create_time = datetime.now()
         team.owner_email = email
         team.owner = User.objects(email=email).first().username
+        team.team_members[team.owner] = email
         try:
             team.save()
         except ValidationError, e:
@@ -91,25 +95,43 @@ class createTeamAPI(Resource):
         if team is not None:
             if team.owner_email != email:
                 abort(400)
+            for keys in team.team_members:
+                profile = Profile.objects(user_email=team_members[keys])
+                profile = profile.first()
+                profile.team = None
             team.delete()
         profile.team = None
         return {'status': 'success'}
 
 class joinTeamAPI(Resource):
     def get(self):
+        return
+
+    def post(self):
         args = profileParser.parse_args()
         token = args['token']
         email = verify_auth_token(token)
         # verify token 
-        #if token is None or email == None:
-        #    abort(400)
-        isSchool = args['isSchool']
-        school = args['school']
+        if token is None or email == None:
+            abort(400)
+        profile = Profile.objects(user_email=email)
+        profile = profile.first()
+        if profile.team is not None:
+            return {'status':'Already has team'}
+        #isSchool = args['isSchool']
+        #school = args['school']
         team_name = args['team_name']
-        return
-
-    def post(self):
-        return
+        team = Team.objects(team_name=team_name)
+        # Team not found
+        if team.first() is None:
+            return {'status':'Team not found'}
+        team = team.first()
+        if len(team.team_members) > 7:
+            return {'status':'Team is full'}
+        profile.team = team.team_name
+        profile.save()
+        team.team_members[User.objects(email=email).first().username] = email
+        return {'status':'success'}
 
     def delete(self):
         return
