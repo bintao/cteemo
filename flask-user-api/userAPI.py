@@ -41,15 +41,16 @@ class UserAPI(Resource):
         if email is None or username is None or password is None:
             abort(400)    # missing arguments
         user = User(email=email, username=username)
+        profile = Profile(user_email=email,username=username)
         user.hash_password(password)
         try:
             user.save()
+            profile.save()
         except ValidationError, e:
             return {'status': 'error', 'message': e.message}  
         except NotUniqueError, e:
             return {'status': 'error', 'message': e.message}
-        profile = Profile(email=email,username=username)
-        profile.save()
+        
         token = user.generate_auth_token(expiration=360000)
         redis_store.set(user.email, token)
         return ({'status': 'success', 'token': token}, 201)

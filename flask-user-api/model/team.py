@@ -9,4 +9,7 @@ class Team(db.Document):
 	team_name = db.StringField(unique=True)
 	team_icon = db.URLField()
 	total_prize = db.FloatField()
+	team_intro = db.StringField() # brief intro of the team 
+	total_games = db.IntField()
+	won_games = db.IntField()
 	#match history

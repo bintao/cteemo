@@ -113,9 +113,9 @@ class ProfileIconAPI(Resource):
             profile.save()
         else:
             profile = profile[0]
-            if profile.profile_icon is not None:
-                old_icon = profile.profile_icon.split('/')[4]
-                bucket.delete_key(old_icon)                
+            #if profile.profile_icon is not None:
+            #    old_icon = profile.profile_icon.split('/')[4]
+            #    bucket.delete_key(old_icon)                
             profile.profile_icon = 'https://s3-us-west-2.amazonaws.com/profile-icon/%s' %filename
             profile.save()
 
