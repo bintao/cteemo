@@ -7,3 +7,6 @@ class Team(db.Document):
 	owner_email = db.EmailField()
 	team_members = db.DictField()
 	team_name = db.StringField(unique=True)
+	team_icon = db.URLField()
+	total_prize = db.FloatField()
+	#match history

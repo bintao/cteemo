@@ -8,3 +8,4 @@ class Profile(db.Document):
 	lol_id = db.StringField()
 	dota_id = db.StringField()
 	team = db.StringField()
+	total_prize = db.FloatField()

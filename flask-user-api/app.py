@@ -8,7 +8,7 @@ from userAPI import UserAPI, LoginAPI, FBUserAPI, FBLoginAPI
 from todoAPI import TodoAPI
 from profileAPI import ProfileAPI, ProfileIconAPI
 from tournamentAPI import TournamentAPI
-from teamAPI import createTeamAPI, joinTeamAPI
+from teamAPI import createTeamAPI, joinTeamAPI, TeamIconAPI
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
@@ -40,6 +40,7 @@ api.add_resource(ProfileIconAPI, '/upload_profile_icon/<string:token>')
 api.add_resource(TournamentAPI, '/tournament')
 api.add_resource(createTeamAPI, '/create_team')
 api.add_resource(joinTeamAPI, '/join_team')
+api.add_resource(TeamIconAPI, '/upload_team_icon/<string:team_name>')
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

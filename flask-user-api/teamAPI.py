@@ -64,7 +64,7 @@ class createTeamAPI(Resource):
                 team.school = school
         team.create_time = datetime.now()
         team.owner_email = email
-        team.owner = User.objects(email=email).first().username
+        team.owner = profile.username
         team.team_members[team.owner] = email
         try:
             team.save()
@@ -101,6 +101,7 @@ class createTeamAPI(Resource):
                 profile.team = None
             team.delete()
         profile.team = None
+        profile.save()
         return {'status': 'success'}
 
 class joinTeamAPI(Resource):
@@ -131,7 +132,35 @@ class joinTeamAPI(Resource):
         profile.team = team.team_name
         profile.save()
         team.team_members[User.objects(email=email).first().username] = email
+        team.save()
         return {'status':'success'}
 
     def delete(self):
         return
+
+class TeamIconAPI(Resource):
+    def post(self, team_name):
+        # verify token 
+        
+        team = Team.objects(team_name=team_name)
+        team = team.first()
+
+        uploaded_file = request.files['upload']
+        filename = "_".join([team_name, uploaded_file.filename])
+
+        conn = boto.connect_s3('AKIAI6Y5TYNOTCIHK63Q', 'mmIpQx6mX/oFjZC6snQ7anO0yTOhEbpqPf2pcr0E')
+        bucket = conn.get_bucket('team-icon')
+        key = bucket.new_key(filename)
+        key.set_contents_from_file(uploaded_file)
+
+        if team is None:
+            team = Team(team_name=team_name, team_icon='https://s3-us-west-2.amazonaws.com/team-icon/%s' %filename)
+        else:
+            team.team_icon = 'https://s3-us-west-2.amazonaws.com/team-icon/%s' %filename
+            team.save()
+
+        result = {}
+        for key in team:
+            if key != "id":
+                result[key] = str(team[key])
+        return result
