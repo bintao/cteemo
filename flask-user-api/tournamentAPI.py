@@ -14,6 +14,8 @@ SECRET_KEY = 'flask is cool'
 tzoffset = {"CST":0, "PST":7200, "MST":3600, "EST":-3600,"CDT":0,"PDT":7200,"MDT":3600,"EDT":-3600}
 
 def verify_auth_token(token):
+    if token is None:
+        return None
     s = Serializer(SECRET_KEY)
     try:
         email = s.loads(token)

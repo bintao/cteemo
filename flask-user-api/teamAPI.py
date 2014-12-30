@@ -18,6 +18,8 @@ profileParser.add_argument('school', type=str)
 profileParser.add_argument('team_name', type=str)
 
 def verify_auth_token(token):
+    if token is None:
+        return None
     s = Serializer(SECRET_KEY)
     try:
         email = s.loads(token)
@@ -164,6 +166,9 @@ class TeamIconAPI(Resource):
         if team is None:
             team = Team(team_name=team_name, team_icon='https://s3-us-west-2.amazonaws.com/team-icon/%s' %filename)
         else:
+            if team.team_icon is not None:
+                old_icon = team.team_icon.split('/')[4]
+                bucket.delete_key(old_icon)  
             team.team_icon = 'https://s3-us-west-2.amazonaws.com/team-icon/%s' %filename
         
         team.save()
