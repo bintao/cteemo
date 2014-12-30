@@ -140,10 +140,18 @@ class joinTeamAPI(Resource):
 
 class TeamIconAPI(Resource):
     def post(self, team_name):
+        args = profileParser.parse_args()
+        token = args['token']
+        email = verify_auth_token(token)
         # verify token 
+        if token is None or email == None:
+            abort(400)
         
         team = Team.objects(team_name=team_name)
         team = team.first()
+
+        if team.owner_email != email:
+            abort(400)
 
         uploaded_file = request.files['upload']
         filename = "_".join([team_name, uploaded_file.filename])
@@ -157,7 +165,8 @@ class TeamIconAPI(Resource):
             team = Team(team_name=team_name, team_icon='https://s3-us-west-2.amazonaws.com/team-icon/%s' %filename)
         else:
             team.team_icon = 'https://s3-us-west-2.amazonaws.com/team-icon/%s' %filename
-            team.save()
+        
+        team.save()
 
         result = {}
         for key in team:

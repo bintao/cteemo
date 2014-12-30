@@ -29,4 +29,4 @@ Delete Team
 curl localhost:5000/create_team -X DELETE -d "token=from login"
 
 Upload Team Icon
-curl --form upload=@local.rb --form press=OK localhost:5000/upload_team_icon/uiuc -X POST
+curl --form upload=@local.rb --form press=OK localhost:5000/upload_team_icon/<string:team_name> -X POST -d "token=from login api"
