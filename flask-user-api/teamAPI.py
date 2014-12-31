@@ -73,9 +73,8 @@ class createTeamAPI(Resource):
             abort(400)
 
         profile = Profile.objects(user_email=email)
-        profile = profile[0] # The first of our query
+        profile = profile.first() # The first of our query
 
-        
     def post(self):
         args = profileParser.parse_args()
         token = args['token']
@@ -178,11 +177,11 @@ class joinTeamAPI(Resource):
         if team.first() is None:
             return {'status':'Team not found'}
         team = team.first()
-        if len(team.team_members) > 7:
+        if len(team.team_members) > 7 or team.team_members.has_key(profile.username):
             return {'status':'Team is full'}
         profile.team = team.team_name
         profile.save()
-        team.team_members[User.objects(email=email).first().username] = email
+        team.team_members[profile.username] = email
         team.save()
         return {'status':'success'}
 

@@ -40,7 +40,7 @@ class UserAPI(Resource):
         password = args['password']
         if email is None or username is None or password is None:
             abort(400)    # missing arguments
-        user = User(email=email, username=username)
+        user = User(email=email)
         profile = Profile(user_email=email,username=username)
         user.hash_password(password)
         try:
@@ -112,10 +112,11 @@ class FBUserAPI(Resource):
             abort(406)
         
         username = fbuser_info['name'] 
-        user = User(email=fb_email, username=username, fb_id=fb_id)
-
+        user = User(email=fb_email, fb_id=fb_id)
+        profile = Profile(username=username)
         try:
             user.save()
+            profile.save()
         except:
             return {'status': 'error', 'message': 'FBname has already existed'}
         token = user.generate_auth_token(expiration=360000)
@@ -135,14 +136,16 @@ class FBLoginAPI(Resource):
         if not fbuser_info.get('id') or fb_id != fbuser_info['id']:
             abort(406)
 
+        fb_email = args['fbemail']
         username = fbuser_info['name']
 
         try:
-            user = User.objects(username=username)[0]
+            user = User.objects(email=fb_email)[0]
         except:
-            fb_email = args['fbemail']
-            user = User(email=fb_email ,username=username, fb_id=fbuser_info['id'])
+            user = User(email=fb_email, fb_id=fbuser_info['id'])
+            profile = Profile(username=username)
             user.save()
+            profile.save()
 
         token = user.generate_auth_token(expiration=360000)
         redis_store.set(user.email, token)
