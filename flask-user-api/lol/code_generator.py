@@ -2,6 +2,9 @@ import json
 import base64
 import sys
 
+class TournamentCodeException(Exception):
+    pass
+
 class lolTournamentCode(object):
     def __init__(self,tournament_name,team1,team2,password,report_url,extra_data,team_size):
         self.name = tournament_name+'_'+team1+'vs'+team2
@@ -43,6 +46,8 @@ class lolTournamentCode(object):
             self.specID = self.spec[spec]
         except:
             return 'Spectator type unavailable'
+        if self.mapID == 10 and self.team_size > 3:
+            raise TournamentCodeException('Maximum team size in twisted treeline is 3')
         otherData = self.serialize()
         return self.build(self.mapID,self.pickID,self.team_size,self.specID,otherData)
 
@@ -60,5 +65,5 @@ class lolTournamentCode(object):
         }))
 
 if __name__ == '__main__':
-    test = lolTournamentCode('cteemo','doubi','shadixx','cteemo2015','google.com',1,5)
-    print test.generate("Summoner's Rift","TOURNAMENT DRAFT","ALL")
+    test = lolTournamentCode('cteemo','doubi','shadixx','cteemo2015','google.com',1,3)
+    print test.generate("Twisted Treeline","TOURNAMENT DRAFT","ALL")

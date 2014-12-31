@@ -40,3 +40,9 @@ curl --form upload=@local.rb --form press=OK localhost:5000/upload_team_icon/<st
 Get my team
 curl localhost:5000/my_team -X GET -d "token=from login api"
 
+Invite teammate
+curl localhost:5000/my_team -X POST -d "token=from login api" -d "user_email=peron's email"
+
+Kick teammate
+curl localhost:5000/my_team -X DELETE -d "token=from login api" -d "username=test"
+

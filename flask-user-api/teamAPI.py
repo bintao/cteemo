@@ -18,6 +18,8 @@ profileParser.add_argument('isSchool', type=int) # if 1 then it is a school team
 profileParser.add_argument('school', type=str)
 profileParser.add_argument('team_name', type=str)
 profileParser.add_argument('team_intro', type=str)
+profileParser.add_argument('username', type=str)
+profileParser.add_argument('user_email', type=str)
 
 def verify_auth_token(token):
     if token is None:
@@ -57,10 +59,105 @@ class myTeamAPI(Resource):
         for key in team:
             if key != 'id' and key != 'team_members':
                 result[key] = str(team[key])
-        members = list()
+        members,icons = list(),list()
         for key in team.team_members:
             members.append(key)
+            icons.append(Profile.objects(user_email=team.team_members[key]).first().profile_icon)
         result['team_members'] = members
+        result['icons'] = icons
+        return result
+
+    def delete(self):
+        args = profileParser.parse_args()
+        token = args['token']
+        email = verify_auth_token(token)
+        # verify token 
+        if token is None or email == None:
+            abort(400)
+
+        profile = Profile.objects(user_email=email)
+        profile = profile.first() # The first of our query
+
+        team = Team.objects(team_name=profile.team) # get the team already joined
+        team = team.first()
+
+        if team is None:
+            return None
+
+        if team.owner_email != email:
+            abort(400)
+
+        username = args['username']
+        if team.team_members.has_key(username):
+            profile =  Profile.objects(user_email=team.team_members[username])
+            profile = profile.first()
+            profile.team = None
+            del team.team_members[username]
+        else:
+            abort(400)
+        profile.save()
+        team.save()
+
+        result = dict()
+        for key in team:
+            if key != 'id' and key != 'team_members':
+                result[key] = str(team[key])
+        members,icons = list(),list()
+        for key in team.team_members:
+            members.append(key)
+            icons.append(Profile.objects(user_email=team.team_members[key]).first().profile_icon)
+        result['team_members'] = members
+        result['icons'] = icons
+        return result
+
+    def post(self):
+        args = profileParser.parse_args()
+        token = args['token']
+        email = verify_auth_token(token)
+        # verify token 
+        if token is None or email == None:
+            abort(400)
+
+        profile = Profile.objects(user_email=email)
+        profile = profile.first() # The first of our query
+
+        team = Team.objects(team_name=profile.team) # get the team already joined
+        team = team.first()
+
+        if team is None:
+            return None
+        if len(team.team_members) > 6:
+            return {'Team is full'}
+        if team.owner_email != email:
+            abort(400)
+
+        email = args['user_email']
+        profile = Profile.objects(user_email=email)
+        profile = profile.first()
+        if profile is None:
+            abort(400)
+        if profile.team is not None:
+            return {'Person already joined a team'}
+        if team.team_members.has_key(profile.username):
+            return {'Change username please'}
+        profile.team = team.team_name
+        team.team_members[profile.username] = email
+        try:
+            profile.save()
+            team.save()
+        except:
+            return { 'status' : 'error'}
+
+        result = dict()
+        for key in team:
+            if key != 'id' and key != 'team_members':
+                result[key] = str(team[key])
+        members,icons = list(),list()
+        for key in team.team_members:
+            members.append(key)
+            icons.append(Profile.objects(user_email=team.team_members[key]).first().profile_icon)
+        result['team_members'] = members
+        result['icons'] = icons
         return result
 
 class createTeamAPI(Resource):
@@ -232,7 +329,7 @@ class TeamIconAPI(Resource):
         uploaded_file = request.files['upload']
         filename = "_".join([team_name, uploaded_file.filename])
 
-        conn = boto.connect_s3('AKIAI6Y5TYNOTCIHK63Q', 'mmIpQx6mX/oFjZC6snQ7anO0yTOhEbpqPf2pcr0E')
+        conn = boto.connect_s3('AKIAJAQHGWIZDOAEQ65A', 'FpmnFv/jte9ral/iXHtL8cDUnuKXAgAqp9aXVQMI')
         bucket = conn.get_bucket('team-icon')
         key = bucket.new_key(filename)
         key.set_contents_from_file(uploaded_file)
