@@ -219,10 +219,12 @@ class createTeamAPI(Resource):
         for key in team:
             if key != "id" and key != 'team_members':
                 result[key] = str(team[key])
-        members = list()
+        members,icons = list(),list()
         for key in team.team_members:
             members.append(key)
+            icons.append(Profile.objects(user_email=team.team_members[key]).first().profile_icon)
         result['team_members'] = members
+        result['icons'] = icons
         return result
 
     def delete(self):
