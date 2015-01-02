@@ -191,10 +191,8 @@ class createTeamAPI(Resource):
             if profile.team is not None:
                 return {'status': 'error', 'message': 'Already has a team'}
             profile.team = team_name
-            profile.save()
         else:
             profile = Profile(user_email=email,team=team_name)
-            profile.save()
         team = Team.objects(team_name=team_name).first()
         if team is None:
             team = Team(isSchool=isSchool, team_name=team_name)
@@ -213,6 +211,7 @@ class createTeamAPI(Resource):
         team.total_prize = 0
         try:
             team.save()
+            profile.save()
         except ValidationError, e:
             return {'status': 'error', 'message': e.message}  
         except NotUniqueError, e:
