@@ -301,6 +301,8 @@ class joinTeamAPI(Resource):
 
         team = Team.objects(team_name=profile.team)
         team = team.first()
+        if team.owner_email == profile.user_email:
+            abort(400)
         profile.team = None
         profile.save()
 
