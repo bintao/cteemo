@@ -182,7 +182,7 @@ class createTeamAPI(Resource):
         if token is None or email == None:
             abort(400)
         # query user's profile
-        isSchool = (args['isSchool'] == 'True')
+        isSchool = (args['isSchool'] == 'true')
         team_name = args['team_name']
         team_intro = args['team_intro']
         profile = Profile.objects(user_email=email)
