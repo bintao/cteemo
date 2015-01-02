@@ -14,7 +14,7 @@ SECRET_KEY = 'flask is cool'
 
 profileParser = reqparse.RequestParser()
 profileParser.add_argument('token', type=str)
-profileParser.add_argument('isSchool', type=int) # if 1 then it is a school team
+profileParser.add_argument('isSchool', type=str) # if 1 then it is a school team
 profileParser.add_argument('school', type=str)
 profileParser.add_argument('team_name', type=str)
 profileParser.add_argument('team_intro', type=str)
@@ -182,7 +182,7 @@ class createTeamAPI(Resource):
         if token is None or email == None:
             abort(400)
         # query user's profile
-        isSchool = args['isSchool']
+        isSchool = (args['isSchool'] == 'True')
         team_name = args['team_name']
         team_intro = args['team_intro']
         profile = Profile.objects(user_email=email)
@@ -200,7 +200,7 @@ class createTeamAPI(Resource):
             team = Team(isSchool=isSchool, team_name=team_name)
         else:
             abort(400)
-        if isSchool == 1:
+        if isSchool == True:
                 school = args['school']
                 team.school = school
         team.team_intro = team_intro
@@ -302,6 +302,9 @@ class joinTeamAPI(Resource):
 
         team = Team.objects(team_name=profile.team)
         team = team.first()
+        profile.team = None
+        profile.save()
+
 
         if team is not None:
             try:
@@ -309,9 +312,6 @@ class joinTeamAPI(Resource):
             except:
                 pass
             team.save()
-
-        profile.team = None
-        profile.save()
 
         return {'status' : 'success'}
 

@@ -12,4 +12,5 @@ class Team(db.Document):
 	team_intro = db.StringField() # brief intro of the team 
 	total_games = db.IntField()
 	won_games = db.IntField()
+	isSchool = db.BooleanField()
 	#match history
