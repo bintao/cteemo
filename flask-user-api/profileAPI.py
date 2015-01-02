@@ -30,6 +30,7 @@ profileParser.add_argument('school', type=str)
 profileParser.add_argument('lol_id', type=str)
 profileParser.add_argument('dota_id', type=str)
 profileParser.add_argument('hh_stone_id', type=str)
+profileParser.add_argument('user_intro', type=str)
 
 class ProfileAPI(Resource):
     def get(self):
@@ -71,10 +72,11 @@ class ProfileAPI(Resource):
         lol_id = args['lol_id']
         dota_id = args['dota_id']
         hh_stone_id = args['hh_stone_id']
+        user_intro = args['user_intro']
 
         profile = Profile.objects(user_email=email)
         if profile.first() is None:
-            profile = Profile(user_email=email, school=school, lol_id=lol_id, dota_id=dota_id, hh_stone_id=hh_stone_id)
+            profile = Profile(user_email=email, school=school, lol_id=lol_id, dota_id=dota_id, hh_stone_id=hh_stone_id, user_intro=user_intro)
             profile.save()
         else:
             profile = profile[0]
@@ -82,6 +84,7 @@ class ProfileAPI(Resource):
             profile.lol_id = lol_id
             profile.dota_id = dota_id
             profile.hh_stone_id = hh_stone_id
+            profile.user_intro = user_intro
             profile.save()
        
         result = {}

@@ -88,6 +88,8 @@ class myTeamAPI(Resource):
             abort(400)
 
         username = args['username']
+        if team.owner == username:
+            abort(400)
         if team.team_members.has_key(username):
             profile =  Profile.objects(user_email=team.team_members[username])
             profile = profile.first()
@@ -137,9 +139,9 @@ class myTeamAPI(Resource):
         if profile is None:
             abort(400)
         if profile.team is not None:
-            return {'Person already joined a team'}
+            return {'error' : 'Person already joined a team'}
         if team.team_members.has_key(profile.username):
-            return {'Change username please'}
+            return {'error' : 'Change username please'}
         profile.team = team.team_name
         team.team_members[profile.username] = email
         try:
@@ -197,8 +199,7 @@ class createTeamAPI(Resource):
         if team is None:
             team = Team(isSchool=isSchool, team_name=team_name)
         else:
-            team.team_name = team_name
-            team.isSchool = isSchool
+            abort(400)
         if isSchool == 1:
                 school = args['school']
                 team.school = school
@@ -209,6 +210,7 @@ class createTeamAPI(Resource):
         team.team_members[team.owner] = email
         team.total_games = 0
         team.won_games = 0
+        team.total_prize = 0
         try:
             team.save()
         except ValidationError, e:
@@ -237,8 +239,10 @@ class createTeamAPI(Resource):
         # query user's profile
         profile = Profile.objects(user_email=email)
         profile = profile.first()
+
         if profile is None:
             abort(400)
+
         team = Team.objects(team_name=profile.team)
         team = team.first()
         if team is not None:
@@ -248,9 +252,8 @@ class createTeamAPI(Resource):
                 profile = Profile.objects(user_email=team.team_members[keys])
                 profile = profile.first()
                 profile.team = None
-            team.delete()
-        profile.team = None
-        profile.save()
+                profile.save()
+        team.delete()
         return {'status': 'success'}
 
 class joinTeamAPI(Resource):
@@ -299,16 +302,15 @@ class joinTeamAPI(Resource):
 
         team = Team.objects(team_name=profile.team)
         team = team.first()
-        if team is None:
-            abort(400)
 
-        try:
-            del team.team_members[profile.username]
-        except:
-            pass
+        if team is not None:
+            try:
+                del team.team_members[profile.username]
+            except:
+                pass
+            team.save()
+
         profile.team = None
-
-        team.save()
         profile.save()
 
         return {'status' : 'success'}
