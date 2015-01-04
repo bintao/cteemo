@@ -89,14 +89,14 @@ class myTeamAPI(Resource):
 
         username = args['username']
         if team.owner == username:
-            abort(400)
+            return {'error' : 'Please assign new captain'}
         if team.team_members.has_key(username):
             profile =  Profile.objects(user_email=team.team_members[username])
             profile = profile.first()
             profile.team = None
             del team.team_members[username]
         else:
-            abort(400)
+            return {'error' : 'Team member not found'}
         profile.save()
         team.save()
 
@@ -137,7 +137,7 @@ class myTeamAPI(Resource):
         profile = Profile.objects(user_email=email)
         profile = profile.first()
         if profile is None:
-            abort(400)
+            return {'error' : 'User not found'}
         if profile.team is not None:
             return {'error' : 'Person already joined a team'}
         if team.team_members.has_key(profile.username):
@@ -147,8 +147,10 @@ class myTeamAPI(Resource):
         try:
             profile.save()
             team.save()
-        except:
-            return { 'status' : 'error'}
+        except ValidationError, e:
+            return {'status': 'error', 'message': e.message}  
+        except NotUniqueError, e:
+            return {'status': 'error', 'message': e.message}
 
         result = dict()
         for key in team:
@@ -257,7 +259,22 @@ class createTeamAPI(Resource):
 
 class joinTeamAPI(Resource):
     def get(self):
-        return
+        args = profileParser.parse_args()
+        token = args['token']
+        email = verify_auth_token(token)
+        # verify token 
+        if token is None or email == None:
+            abort(400)
+        #get profile
+        profile = Profile.objects(user_email=email)
+        profile = profile.first()
+        #get team
+        team_name = args['team_name']
+        team = Team.objects(team_name__icontains=team_name)
+        if team is None:
+            return {'status' : 'No team found'}
+        # give users team name and team icon
+        
 
     def post(self):
         args = profileParser.parse_args()
@@ -278,8 +295,10 @@ class joinTeamAPI(Resource):
         if team.first() is None:
             return {'status':'Team not found'}
         team = team.first()
-        if len(team.team_members) > 7 or team.team_members.has_key(profile.username):
+        if len(team.team_members) > 6:
             return {'status':'Team is full'}
+        if team.team_members.has_key(profile.username):
+            return {'status':'Same username in one team is not allowed'}
         profile.team = team.team_name
         profile.save()
         team.team_members[profile.username] = email
@@ -302,7 +321,7 @@ class joinTeamAPI(Resource):
         team = Team.objects(team_name=profile.team)
         team = team.first()
         if team.owner_email == profile.user_email:
-            abort(400)
+            return {'error' : 'Please assgin new captain'}
         profile.team = None
         profile.save()
 

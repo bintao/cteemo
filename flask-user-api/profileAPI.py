@@ -2,6 +2,7 @@ from flask import request, abort
 from flask.ext.restful import Resource, reqparse
 from model.redis import redis_store
 from model.profile import Profile
+from model.teaminfo import TeamInfo
 import boto
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
@@ -74,16 +75,21 @@ class ProfileAPI(Resource):
         hh_stone_id = args['hh_stone_id']
         user_intro = args['user_intro']
 
+        teaminfo = TeamInfo.objects(user_email=email).first()
+        if teaminfo is None:
+            teaminfo = TeamInfo(user_email=email,lol_id=lol_id,dota_id=dota_id,hh_stone_id=hh_stone_id)
+        else:
+            teaminfo.lol_id = lol_id
+            teaminfo.dota_id = dota_id
+            teaminfo.hh_stone_id = hh_stone_id
+        teaminfo.save()
+
         profile = Profile.objects(user_email=email)
         if profile.first() is None:
-            profile = Profile(user_email=email, school=school, lol_id=lol_id, dota_id=dota_id, hh_stone_id=hh_stone_id, user_intro=user_intro)
+            profile = Profile(user_email=email, school=school, user_intro=user_intro, teaminfo=teaminfo)
             profile.save()
         else:
             profile = profile[0]
-            profile.school = school
-            profile.lol_id = lol_id
-            profile.dota_id = dota_id
-            profile.hh_stone_id = hh_stone_id
             profile.user_intro = user_intro
             profile.save()
        
@@ -115,10 +121,7 @@ class ProfileIconAPI(Resource):
             profile = Profile(user_email=email, profile_icon='https://s3-us-west-2.amazonaws.com/profile-icon/%s' %filename)
             profile.save()
         else:
-            profile = profile[0]
-            #if profile.profile_icon is not None:
-            #    old_icon = profile.profile_icon.split('/')[4]
-            #    bucket.delete_key(old_icon)                
+            profile = profile[0]                
             profile.profile_icon = 'https://s3-us-west-2.amazonaws.com/profile-icon/%s' %filename
             profile.save()
 

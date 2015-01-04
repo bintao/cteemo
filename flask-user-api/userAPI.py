@@ -4,6 +4,7 @@ from mongoengine.errors import NotUniqueError, ValidationError
 from model.user import User
 from model.profile import Profile
 from model.redis import redis_store
+from model.teaminfo import TeamInfo
 import requests 
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
@@ -41,10 +42,12 @@ class UserAPI(Resource):
         if email is None or username is None or password is None:
             abort(400)    # missing arguments
         user = User(email=email)
-        profile = Profile(user_email=email,username=username)
+        teaminfo = TeamInfo(user_email=email)
+        profile = Profile(user_email=email,username=username,teaminfo=teaminfo)
         user.hash_password(password)
         try:
             user.save()
+            teaminfo.save()
             profile.save()
         except ValidationError, e:
             return {'status': 'error', 'message': e.message}  
