@@ -1,16 +1,11 @@
-from user import db
+from model import db
+from datetime import datetime
 
 class Team(db.Document):
-	create_time = db.DateTimeField()
-	school = db.StringField()
-	owner = db.StringField()
-	owner_email = db.EmailField()
-	team_members = db.DictField()
-	team_name = db.StringField(unique=True)
-	team_icon = db.URLField()
-	total_prize = db.FloatField()
-	team_intro = db.StringField() # brief intro of the team 
-	total_games = db.IntField()
-	won_games = db.IntField()
-	isSchool = db.BooleanField()
-	#match history
+	createTime = db.DateTimeField(default=datetime.now())
+	teamBalance = db.FloatField(default=0)
+	teamName = db.StringField(required=True,unique=True)
+	teamIntro = db.StringField(default='Captain left nothing here', max_length=200)
+	captain = db.ReferenceField('Profile')
+	meta = {'allow_inheritance' : True,
+			}

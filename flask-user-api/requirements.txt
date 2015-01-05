@@ -7,5 +7,3 @@ itsdangerous==0.24
 requests 
 gunicorn
 boto
-dateutils
-flask-script
