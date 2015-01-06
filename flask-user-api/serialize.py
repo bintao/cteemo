@@ -1,8 +1,10 @@
 def serialize(object):
     result = {}
     for key in object:
-    	if key == "id" or key == "user" or key == "LOLTeam" or key == "DOTATeam" or key == "HSTONETeam":
+    	if key == "id" or key == "LOLTeam" or key == "DOTATeam" or key == "HSTONETeam":
     		pass
+    	elif key == "user":
+    		result[key] = str(object[key].id)
     	else:
        	    result[key] = str(object[key])
     return result
