@@ -10,6 +10,8 @@ class Team(db.Document):
 	isSchool = db.BooleanField()
 	school = db.StringField()
 	teamIcon = db.URLField()
+	gameWon = db.IntField(default=0)
+	gamePlayed = db.IntField(default=0)
 	meta = {'allow_inheritance' : True,
 			'abstract' : True,
 			}
