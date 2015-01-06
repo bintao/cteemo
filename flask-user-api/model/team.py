@@ -7,5 +7,9 @@ class Team(db.Document):
 	teamName = db.StringField(required=True,unique=True)
 	teamIntro = db.StringField(default='Captain left nothing here', max_length=200)
 	captain = db.ReferenceField('Profile')
+	isSchool = db.BooleanField()
+	school = db.StringField()
+	teamIcon = db.URLField()
 	meta = {'allow_inheritance' : True,
+			'abstract' : True,
 			}

@@ -16,10 +16,9 @@ class manage_TeamAPI(Resource):
 	@auth_required
 	def post(self, user_id):
 		args = teamParser.parse_args()
-		teamName = args['teamName']
 		userID = args['userID']
 		profile = Profile.objects(user=user_id).first()
-		team = LOLTeam.objects(teamName=teamName).first()
+		team = profile.LOLTeam
 		# avoid illegal operation
 		if team is None:
 			abort(400)
@@ -29,9 +28,11 @@ class manage_TeamAPI(Resource):
 		profile = Profile.objects(user=userID).first()
 		if profile is None:
 			return {'status' : 'user not found'}
-		if len(team.members) >= 6:
+		try:
+			assert len(team.members) < 6
+			team.members.append(profile)
+		except:
 			return {'status' : 'team is full'}
-		team.members.append(profile)
 		profile.LOLTeam = team
 		team.save()
 		profile.save()
@@ -41,19 +42,22 @@ class manage_TeamAPI(Resource):
 	@auth_required
 	def delete(self, user_id):
 		args = teamParser.parse_args()
-		teamName = args['teamName']
 		userID = args['userID']
 		profile = Profile.objects(user=user_id).first()
-		team = LOLTeam.objects(teamName=teamName).first()
+		team = profile.LOLTeam
 		# avoid illegal operation
 		if team is None:
 			abort(400)
 		if team.captain != profile:
 			abort(400)
 		# query the player u want to kick
-		for member in team.members:
-			if member.user == userID:
-				break
-		if member.user != userID:
-			return {'status' : 'user not found'}
+		try:
+			member = Profile.objects(user=userID).first()
+			member.LOLTeam = None
+			team.update(pull__members=member,safe=True)
+		except:
+			return {'error' : 'member not found'}
+		team.save()
+		member.save()
 		
+		return {'status' : 'success'}

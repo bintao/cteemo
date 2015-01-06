@@ -17,7 +17,7 @@ Upload Profile Icon
 curl --form upload=@icon.png --form press=OK localhost:5000/upload_profile_icon -X POST --header "token: from login api"
 
 Create Team LOL
-curl localhost:5000/create_team/lol -X POST --header "token: from login" -d "teamName=test" -d "teamIntro=haha"
+curl localhost:5000/create_team/lol -X POST --header "token: from login" -d "teamName=test" -d "teamIntro=haha" -d "isSchool=True" -d "school=UIUC"
 
 Get my LOL Team
 curl localhost:5000/create_team/lol -X GET --header "token: from login"
@@ -25,5 +25,16 @@ curl localhost:5000/create_team/lol -X GET --header "token: from login"
 Disband LOL Team
 curl localhost:5000/create_team/lol -X DELETE --header "token: from login"
 
-Invite teammates 
-curl localhost:5000/manage_team -X POST --header "token: from login" -d "teamName=test" -d "userID=test1"
+Invite Teammates 
+curl localhost:5000/manage_team/lol -X POST --header "token: from login" -d "userID=54ab3d2fafccb81391f1935d"
+
+Kick Teammates
+curl localhost:5000/manage_team/lol -X DELETE --header "token: from login" -d "userID=54ab3d2fafccb81391f1935d"
+
+Join Team
+curl localhost:5000/my_team/lol -X POST --header "token: from login" -d "teamName=test"
+
+Leave Team
+curl localhost:5000/my_team/lol -X DELETE --header "token: from login" 
+
+

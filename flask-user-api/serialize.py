@@ -10,7 +10,7 @@ def serialize(object):
 def team_serialize(team):
 	result = dict()
 	for key in team:
-		if key == "id" or key == "meta" or key == "matchHistory":
+		if key == "id" or key == "matchHistory":
 			pass
 		elif key == "captain":
 			result['captain'],result['captain_icon'] = profile_serialize([team[key]]) 

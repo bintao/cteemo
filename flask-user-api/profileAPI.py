@@ -4,6 +4,7 @@ from model.profile import Profile
 from userAuth import auth_required
 from serialize import serialize
 import boto
+import os
 
 
 profileParser = reqparse.RequestParser()
@@ -53,7 +54,7 @@ class ProfileIconAPI(Resource):
         uploaded_file = request.files['upload']
         filename = "_".join([user_id, uploaded_file.filename])
 
-        conn = boto.connect_s3(os.environ['S3_KEY'], os.environ['S3_SECRET'])
+        conn = boto.connect_s3('AKIAJAQHGWIZDOAEQ65A', 'FpmnFv/jte9ral/iXHtL8cDUnuKXAgAqp9aXVQMI')
         bucket = conn.get_bucket('profile-icon')
         key = bucket.new_key(filename)
         key.set_contents_from_file(uploaded_file)

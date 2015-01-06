@@ -6,12 +6,14 @@ from model.lol_team import LOLTeam
 from userAuth import auth_required
 from serialize import team_serialize
 import boto
-
+import os
 
 teamParser = reqparse.RequestParser()
 teamParser.add_argument('teamIntro', type=str)
 teamParser.add_argument('teamName', type=str)
 teamParser.add_argument('userID', type=str) # This userID is the operand
+teamParser.add_argument('isSchool', type=str) # if 1 then it is a school team
+teamParser.add_argument('school', type=str)
 
 class lolTeamAPI(Resource):
 	@auth_required
@@ -22,7 +24,11 @@ class lolTeamAPI(Resource):
 		args = teamParser.parse_args()
 		teamName = args['teamName']
 		teamIntro = args['teamIntro']
-		team = LOLTeam(teamName=teamName,teamIntro=teamIntro,captain=profile)
+		isSchool = (args['isSchool'] == 'True')
+		school = args['school']
+		team = LOLTeam(teamName=teamName,teamIntro=teamIntro,captain=profile,isSchool=isSchool)
+		if isSchool is True:
+			team.school = school
 		try:
 			team.save()
 		except ValidationError, e:
@@ -58,3 +64,114 @@ class lolTeamAPI(Resource):
 		profile.save()
 		team.delete()
 		return {'status' : 'success'}
+
+class mylolTeamAPI(Resource):
+	@auth_required
+	def post(self, user_id):
+		args = teamParser.parse_args()
+		profile = Profile.objects(user=user_id).first()
+		if profile.LOLTeam is not None:
+			return {'status' : 'Already joined a team'}
+
+		teamName = args['teamName']
+		team = LOLTeam.objects(teamName=teamName).first()
+		if team is None:
+			return {'status' : 'team not found'}
+		try:
+			assert len(team.members) < 6
+			team.members.append(profile)
+		except:
+			return {'status' : 'team is full'}
+		profile.LOLTeam = team
+
+		team.save()
+		profile.save()
+
+		return team_serialize(team)
+
+	@auth_required
+	def delete(self, user_id):
+		profile = Profile.objects(user=user_id).first()
+		if profile.LOLTeam is None:
+			abort(400)
+
+		team = profile.LOLTeam
+		try:
+			team.update(pull__members=profile,safe=True)
+		except:
+			return {'status' : 'captain is not allowed to quit'}
+		profile.LOLTeam = None
+		profile.save()
+		team.save()
+
+		return {'status' : 'success'}
+
+class managelolTeamAPI(Resource):
+	@auth_required
+	def post(self, user_id):
+		args = teamParser.parse_args()
+		userID = args['userID']
+		profile = Profile.objects(user=user_id).first()
+		team = profile.LOLTeam
+		# avoid illegal operation
+		if team is None:
+			abort(400)
+		if team.captain != profile:
+			abort(400)
+		# query the player u want to invite
+		profile = Profile.objects(user=userID).first()
+		if profile is None:
+			return {'status' : 'user not found'}
+		try:
+			assert len(team.members) < 6
+			team.members.append(profile)
+		except:
+			return {'status' : 'team is full'}
+		profile.LOLTeam = team
+		team.save()
+		profile.save()
+
+		return team_serialize(team)
+
+	@auth_required
+	def delete(self, user_id):
+		args = teamParser.parse_args()
+		userID = args['userID']
+		profile = Profile.objects(user=user_id).first()
+		team = profile.LOLTeam
+		# avoid illegal operation
+		if team is None:
+			abort(400)
+		if team.captain != profile:
+			abort(400)
+		# query the player u want to kick
+		try:
+			member = Profile.objects(user=userID).first()
+			member.LOLTeam = None
+			team.update(pull__members=member,safe=True)
+		except:
+			return {'error' : 'member not found'}
+		team.save()
+		member.save()
+		
+		return {'status' : 'success'}
+
+class lolTeamIconAPI(Resource):
+	@auth_required
+	def post(self, user_id):
+		profile = Profile.objects(user=user_id).first()
+		team = profile.LOLTeam
+		# prevent bad request
+		if team.captain != profile:
+			abort(400)
+		uploaded_file = request.files['upload']
+		filename = "_".join([user_id, uploaded_file.filename])
+		conn = boto.connect_s3('AKIAJAQHGWIZDOAEQ65A', 'FpmnFv/jte9ral/iXHtL8cDUnuKXAgAqp9aXVQMI')
+		bucket = conn.get_bucket('team-icon')
+		key = bucket.new_key(filename)
+		key.set_contents_from_file(uploaded_file)
+		team.teamIcon = 'https://s3-us-west-2.amazonaws.com/team-icon/%s' %filename
+		team.save()
+		return team_serialize(team)
+        
+

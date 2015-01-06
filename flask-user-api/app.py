@@ -3,8 +3,7 @@ from flask.ext.restful import Resource, Api
 from model import db, bcrypt, redis_store
 from userAPI import UserAPI, LoginAPI, FBUserAPI, FBLoginAPI
 from profileAPI import ProfileAPI, ProfileIconAPI
-from lol_teamAPI import lolTeamAPI
-from manage_teamAPI import manage_TeamAPI
+from lol_teamAPI import lolTeamAPI, mylolTeamAPI, managelolTeamAPI, lolTeamIconAPI
 
 app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {
@@ -33,7 +32,9 @@ api.add_resource(ProfileAPI, '/profile')
 api.add_resource(ProfileIconAPI, '/upload_profile_icon')
 
 api.add_resource(lolTeamAPI, '/create_team/lol')
-api.add_resource(manage_TeamAPI, '/manage_team')
+api.add_resource(mylolTeamAPI, '/my_team/lol')
+api.add_resource(managelolTeamAPI, '/manage_team/lol')
+api.add_resource(lolTeamIconAPI, '/upload_team_icon/lol')
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
