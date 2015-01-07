@@ -15,6 +15,7 @@ profileParser.add_argument('intro', type=str)
 profileParser.add_argument('lolID', type=str)
 profileParser.add_argument('dotaID', type=str)
 profileParser.add_argument('hstoneID', type=str)
+profileParser.add_argument('page', type=int)
 
 class ProfileAPI(Resource):
     @auth_required
@@ -76,12 +77,16 @@ class findProfileAPI(Resource):
         args = profileParser.parse_args()
         username = args['username']
         school = args['school']
-        if username is None and school is None:
+        page = args['page']
+        if (username is None and school is None):
             abort(400)
-        elif username is None:
-            profiles = Profile.objects(school=school)
-        elif school is None:
-            profiles = Profile.objects(username__icontains=username)
-        else:
-            profiles = Profile.objects(Q(username__icontains=username) & Q(school=school))
-        return profile_search_serialize(profiles[:5])
+        if page is None:
+            page = 0
+
+        profiles = Profile.objects.only('username', 'profile_icon', 'school')
+        if username is not None:
+            profiles = profiles.filter(username__icontains=username)
+        if school is not None:
+            profiles = profiles.filter(school=school)
+
+        return profile_search_serialize(profiles[10*page:10*(page+1)])

@@ -11,7 +11,7 @@ import os
 teamParser = reqparse.RequestParser()
 teamParser.add_argument('teamIntro', type=str)
 teamParser.add_argument('teamName', type=str)
-teamParser.add_argument('userID', type=str) # This userID is the operand
+teamParser.add_argument('profileID', type=str) # This profileID is the operand
 teamParser.add_argument('isSchool', type=str) # if 1 then it is a school team
 teamParser.add_argument('school', type=str)
 
@@ -110,16 +110,16 @@ class managelolTeamAPI(Resource):
 	@auth_required
 	def post(self, user_id):
 		args = teamParser.parse_args()
-		userID = args['userID']
+		profileID = args['profileID']
 		profile = Profile.objects(user=user_id).first()
 		team = profile.LOLTeam
 		# avoid illegal operation
 		if team is None:
 			abort(400)
 		if team.captain != profile:
-			abort(400)
+			abort(401)
 		# query the player u want to invite
-		profile = Profile.objects(user=userID).first()
+		profile = Profile.objects(id=profileID).first()
 		if profile is None:
 			return {'status' : 'user not found'}
 		try:
@@ -136,17 +136,17 @@ class managelolTeamAPI(Resource):
 	@auth_required
 	def delete(self, user_id):
 		args = teamParser.parse_args()
-		userID = args['userID']
+		profileID = args['profileID']
 		profile = Profile.objects(user=user_id).first()
 		team = profile.LOLTeam
 		# avoid illegal operation
 		if team is None:
 			abort(400)
 		if team.captain != profile:
-			abort(400)
+			abort(401)
 		# query the player u want to kick
 		try:
-			member = Profile.objects(user=userID).first()
+			member = Profile.objects(id=profileID).first()
 			member.LOLTeam = None
 			team.update(pull__members=member,safe=True)
 		except:
@@ -163,7 +163,7 @@ class lolTeamIconAPI(Resource):
 		team = profile.LOLTeam
 		# prevent bad request
 		if team.captain != profile:
-			abort(400)
+			abort(401)
 		uploaded_file = request.files['upload']
 		filename = "_".join([user_id, uploaded_file.filename])
 		conn = boto.connect_s3('AKIAJAQHGWIZDOAEQ65A', 'FpmnFv/jte9ral/iXHtL8cDUnuKXAgAqp9aXVQMI')

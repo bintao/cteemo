@@ -1,10 +1,8 @@
 def serialize(object):
     result = {}
     for key in object:
-    	if key == "id" or key == "LOLTeam" or key == "DOTATeam" or key == "HSTONETeam":
+    	if key == "id" or key == "LOLTeam" or key == "DOTATeam" or key == "HSTONETeam" or key == "user":
     		pass
-    	elif key == "user":
-    		result[key] = str(object[key].id)
     	else:
        	    result[key] = str(object[key])
     return result
@@ -15,9 +13,9 @@ def team_serialize(team):
 		if key == "id" or key == "matchHistory":
 			pass
 		elif key == "captain":
-			result['captain'],result['captain_icon'],result['captain_id'] = profile_serialize([team[key]]) 
+			result['captain'] = profile_search_serialize([team[key]]) 
 		elif key == "members":
-			result['members'],result['members_icon'],result['members_id'] = profile_serialize(team[key])
+			result['members'] = profile_search_serialize(team[key])
 		else:
 			result[key] = str(team[key])
 	return result
@@ -31,6 +29,15 @@ def profile_serialize(profiles):
 	return username,icons,userID
 
 def profile_search_serialize(profiles):
-	result = dict()
-	result['username'],result['icons'],result['userID'] = profile_serialize(profiles)
+	result = list()
+	for profile in profiles:
+		result.append({
+			'profile_id': str(profile.id),
+			'username': profile.username,
+			'profile_icon': profile.profile_icon,
+			'school': profile.school
+			})
 	return result
+
+def friends_list_serialize(friends_list):
+	return profile_search_serialize(friends_list)
