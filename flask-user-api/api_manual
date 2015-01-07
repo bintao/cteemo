@@ -1,8 +1,14 @@
+Run in port 5000
+gunicorn -c gunicorn.py app:app
+
 Create User 
 curl localhost:5000/create_user -X POST -d "email=123@gmail.com" -d "password=123"
 
 Login 
 curl localhost:5000/login -X POST -d "email=123@gmail.com" -d "password=123"
+
+Change Password
+curl localhost:5000/change_password -X POST -d "old_password=123" -d "new_password=123"
 
 Renew Token 
 curl localhost:5000/login -X GET --header "token: from login api"
@@ -32,7 +38,7 @@ Invite Teammates
 curl localhost:5000/manage_team/lol -X POST --header "token: from login" -d "profileID=54ab3d2fafccb81391f1935e"
 
 Kick Teammates
-curl localhost:5000/manage_team/lol -X DELETE --header "token: from login" -d "profileID=54ab3d2fafccb81391f1935d"
+curl localhost:5000/manage_team/lol -X DELETE --header "token: from login" -d "profileID=54ab3d2fafccb81391f1935e"
 
 Join Team
 curl localhost:5000/my_team/lol -X POST --header "token: from login" -d "teamName=test"
@@ -47,6 +53,6 @@ Get Friends List
 curl localhost:5000/friends_list -X GET --header "token: from login api"
 
 Add to Friends List 
-curl localhost:5000/friends_list -X POST --header "token: from login api" -d "profileID=54ab3d2fafccb81391f1935d"
+curl localhost:5000/friends_list -X POST --header "token: from login api" -d "profileID=54ab3d2fafccb81391f1935e"
 
 
