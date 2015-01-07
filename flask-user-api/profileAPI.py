@@ -2,7 +2,8 @@ from flask import request, abort
 from flask.ext.restful import Resource, reqparse
 from model.profile import Profile
 from userAuth import auth_required
-from serialize import serialize
+from serialize import serialize, profile_search_serialize
+from mongoengine.queryset import Q
 import boto
 import os
 
@@ -68,3 +69,19 @@ class ProfileIconAPI(Resource):
             profile.save()
 
         return serialize(profile)
+
+class findProfileAPI(Resource):
+    @auth_required
+    def get(self, user_id):
+        args = profileParser.parse_args()
+        username = args['username']
+        school = args['school']
+        if username is None and school is None:
+            abort(400)
+        elif username is None:
+            profiles = Profile.objects(school=school)
+        elif school is None:
+            profiles = Profile.objects(username__icontains=username)
+        else:
+            profiles = Profile.objects(Q(username__icontains=username) & Q(school=school))
+        return profile_search_serialize(profiles[:5])

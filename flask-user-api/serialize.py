@@ -15,16 +15,22 @@ def team_serialize(team):
 		if key == "id" or key == "matchHistory":
 			pass
 		elif key == "captain":
-			result['captain'],result['captain_icon'] = profile_serialize([team[key]]) 
+			result['captain'],result['captain_icon'],result['captain_id'] = profile_serialize([team[key]]) 
 		elif key == "members":
-			result['members'],result['members_icon'] = profile_serialize(team[key])
+			result['members'],result['members_icon'],result['members_id'] = profile_serialize(team[key])
 		else:
 			result[key] = str(team[key])
 	return result
 
 def profile_serialize(profiles):
-	username,icons = list(),list()
+	username,icons,userID = list(),list(),list()
 	for profile in profiles:
 		username.append(profile.username)
 		icons.append(profile.profile_icon)
-	return username,icons
+		userID.append(str(profile.user.id))
+	return username,icons,userID
+
+def profile_search_serialize(profiles):
+	result = dict()
+	result['username'],result['icons'],result['userID'] = profile_serialize(profiles)
+	return result

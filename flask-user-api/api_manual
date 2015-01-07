@@ -16,6 +16,9 @@ curl localhost:5000/profile -X POST --header "token: from login api" -d "usernam
 Upload Profile Icon 
 curl --form upload=@icon.png --form press=OK localhost:5000/upload_profile_icon -X POST --header "token: from login api"
 
+Find profiles
+curl localhost:5000/search_profile -X GET --header "token: from login api"  -d "username=test" -d "school=UIUC"
+
 Create Team LOL
 curl localhost:5000/create_team/lol -X POST --header "token: from login" -d "teamName=test" -d "teamIntro=haha" -d "isSchool=True" -d "school=UIUC"
 

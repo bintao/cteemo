@@ -2,7 +2,7 @@ from flask import Flask, request, abort
 from flask.ext.restful import Resource, Api
 from model import db, bcrypt, redis_store
 from userAPI import UserAPI, LoginAPI, FBUserAPI, FBLoginAPI
-from profileAPI import ProfileAPI, ProfileIconAPI
+from profileAPI import ProfileAPI, ProfileIconAPI, findProfileAPI
 from lol_teamAPI import lolTeamAPI, mylolTeamAPI, managelolTeamAPI, lolTeamIconAPI
 
 app = Flask(__name__)
@@ -30,6 +30,7 @@ api.add_resource(FBLoginAPI, '/fb_login')
 
 api.add_resource(ProfileAPI, '/profile')
 api.add_resource(ProfileIconAPI, '/upload_profile_icon')
+api.add_resource(findProfileAPI, '/search_profile')
 
 api.add_resource(lolTeamAPI, '/create_team/lol')
 api.add_resource(mylolTeamAPI, '/my_team/lol')
