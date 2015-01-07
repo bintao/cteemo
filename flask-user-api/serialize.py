@@ -20,6 +20,17 @@ def team_serialize(team):
 			result[key] = str(team[key])
 	return result
 
+def team_search_serialize(teams):
+	result = list()
+	for team in teams:
+		result.append({
+			'teamName' : team.teamName,
+			'teamIcon' : team.teamIcon,
+			'captain' : team.captain.username,
+			'school' : team.school
+			})
+	return result
+
 def profile_serialize(profiles):
 	username,icons,userID = list(),list(),list()
 	for profile in profiles:

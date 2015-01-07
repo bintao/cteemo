@@ -8,7 +8,7 @@ Login
 curl localhost:5000/login -X POST -d "email=123@gmail.com" -d "password=123"
 
 Change Password
-curl localhost:5000/change_password -X POST -d "old_password=123" -d "new_password=123"
+curl localhost:5000/change_password -X POST --header "token: from login" -d "old_password=123" -d "new_password=123"
 
 Renew Token 
 curl localhost:5000/login -X GET --header "token: from login api"
@@ -25,11 +25,14 @@ curl --form upload=@icon.png --form press=OK localhost:5000/upload_profile_icon 
 Find profiles
 curl localhost:5000/search_profile -X GET --header "token: from login api"  -d "username=test" -d "school=UIUC"
 
+View profiles
+curl localhost:5000/view_profile -X GET --header "token: from login api"  -d "profileID=54ab3d2fafccb81391f1935e"
+
 Create Team LOL
 curl localhost:5000/create_team/lol -X POST --header "token: from login" -d "teamName=test" -d "teamIntro=haha" -d "isSchool=True" -d "school=UIUC"
 
 Get my LOL Team
-curl localhost:5000/create_team/lol -X GET --header "token: from login"
+curl localhost:5000/my_team/lol -X GET --header "token: from login"
 
 Disband LOL Team
 curl localhost:5000/create_team/lol -X DELETE --header "token: from login"
@@ -45,6 +48,9 @@ curl localhost:5000/my_team/lol -X POST --header "token: from login" -d "teamNam
 
 Leave Team
 curl localhost:5000/my_team/lol -X DELETE --header "token: from login" 
+
+Search Team
+curl localhost:5000/search_team/lol -X GET --header "token: from login" -d "teamName=test" -d "school=UIUC"
 
 Upload Team Icon
 curl --form upload=@icon.png --form press=OK localhost:5000/upload_team_icon/lol -X POST --header "token: from login"

@@ -15,6 +15,7 @@ profileParser.add_argument('intro', type=str)
 profileParser.add_argument('lolID', type=str)
 profileParser.add_argument('dotaID', type=str)
 profileParser.add_argument('hstoneID', type=str)
+profileParser.add_argument('profileID', type=str)
 profileParser.add_argument('page', type=int)
 
 class ProfileAPI(Resource):
@@ -90,3 +91,15 @@ class findProfileAPI(Resource):
             profiles = profiles.filter(school=school)
 
         return profile_search_serialize(profiles[10*page:10*(page+1)])
+
+class ViewProfileAPI(Resource):
+    @auth_required
+    def get(self, user_id):
+        args = profileParser.parse_args()
+        profileID = args['profileID']
+
+        profile = Profile.objects(id=profileID).first()
+        if profile is None:
+            abort(400)
+
+        return serialize(profile)

@@ -4,7 +4,7 @@ from mongoengine.errors import NotUniqueError, ValidationError
 from model.profile import Profile
 from model.lol_team import LOLTeam
 from userAuth import auth_required
-from serialize import team_serialize
+from serialize import team_serialize, team_search_serialize
 import boto
 import os
 
@@ -14,6 +14,7 @@ teamParser.add_argument('teamName', type=str)
 teamParser.add_argument('profileID', type=str) # This profileID is the operand
 teamParser.add_argument('isSchool', type=str) # if 1 then it is a school team
 teamParser.add_argument('school', type=str)
+teamParser.add_argument('page', type=int)
 
 class lolTeamAPI(Resource):
 	@auth_required
@@ -40,14 +41,6 @@ class lolTeamAPI(Resource):
 		return team_serialize(team)
 
 	@auth_required
-	def get(self, user_id):
-		profile = Profile.objects(user=user_id).first()
-		if profile.LOLTeam is None:
-			return {'status' : 'Not joined any team yet'}
-		team = profile.LOLTeam
-		return team_serialize(team)
-
-	@auth_required
 	def delete(self, user_id):
 		profile = Profile.objects(user=user_id).first()
 		if profile.LOLTeam is None:
@@ -66,6 +59,14 @@ class lolTeamAPI(Resource):
 		return {'status' : 'success'}
 
 class mylolTeamAPI(Resource):
+	@auth_required
+	def get(self, user_id):
+		profile = Profile.objects(user=user_id).first()
+		if profile.LOLTeam is None:
+			return {'status' : 'Not joined any team yet'}
+		team = profile.LOLTeam
+		return team_serialize(team)
+
 	@auth_required
 	def post(self, user_id):
 		args = teamParser.parse_args()
@@ -174,4 +175,18 @@ class lolTeamIconAPI(Resource):
 		team.save()
 		return team_serialize(team)
         
-
+class SearchlolTeamAPI(Resource):
+	@auth_required
+	def get(self, user_id):
+		args = teamParser.parse_args()
+		teamName = args['teamName']
+		school = args['school']
+		page = args['page']
+		if teamName is None and school is None:
+			abort(400)
+		teams = LOLTeam.objects.only('teamName','school','captain','teamIcon')
+		if teamName is not None:
+			teams = teams.filter(teamName__icontains=teamName)
+		if school is not None:
+			teams = teams.filter(school=school)
+		return team_search_serialize(teams)

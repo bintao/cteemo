@@ -2,8 +2,8 @@ from flask import Flask, request, abort
 from flask.ext.restful import Resource, Api
 from model import db, bcrypt, redis_store
 from userAPI import UserAPI, LoginAPI, FBUserAPI, FBLoginAPI
-from profileAPI import ProfileAPI, ProfileIconAPI, findProfileAPI
-from lol_teamAPI import lolTeamAPI, mylolTeamAPI, managelolTeamAPI, lolTeamIconAPI
+from profileAPI import ProfileAPI, ProfileIconAPI, findProfileAPI, ViewProfileAPI
+from lol_teamAPI import lolTeamAPI, mylolTeamAPI, managelolTeamAPI, lolTeamIconAPI, SearchlolTeamAPI
 from FriendsAPI import FriendsListAPI
 from PasswordAPI import ChangePasswordAPI
 
@@ -35,6 +35,7 @@ api.add_resource(ChangePasswordAPI, '/change_password')
 api.add_resource(ProfileAPI, '/profile')
 api.add_resource(ProfileIconAPI, '/upload_profile_icon')
 api.add_resource(findProfileAPI, '/search_profile')
+api.add_resource(ViewProfileAPI, '/view_profile')
 
 api.add_resource(FriendsListAPI, '/friends_list')
 
@@ -42,6 +43,7 @@ api.add_resource(lolTeamAPI, '/create_team/lol')
 api.add_resource(mylolTeamAPI, '/my_team/lol')
 api.add_resource(managelolTeamAPI, '/manage_team/lol')
 api.add_resource(lolTeamIconAPI, '/upload_team_icon/lol')
+api.add_resource(SearchlolTeamAPI, '/search_team/lol')
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
