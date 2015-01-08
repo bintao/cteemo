@@ -52,3 +52,12 @@ def profile_search_serialize(profiles):
 
 def friends_list_serialize(friends_list):
 	return profile_search_serialize(friends_list)
+
+def tournament_serialize(tournament):
+	result = dict()
+	for key in tournament:
+		if key == 'creator':
+			result[key] = tournament[key].username
+		else:
+			result[key] = str(tournament[key])
+	return result

@@ -61,4 +61,7 @@ curl localhost:5000/friends_list -X GET --header "token: from login api"
 Add to Friends List 
 curl localhost:5000/friends_list -X POST --header "token: from login api" -d "profileID=54ab3d2fafccb81391f1935e"
 
+Create Tournament
+curl localhost:5000/create_tournament -X POST --header "token: from login api" -d "tournamentName=UIUCvsMIT" -d "isSchool=True" -d "school=UIUC" -d "entry_fee=5" -d "size=16" -d "descriptions=test for what" -d "Total_Prize=999"
+
 

@@ -6,6 +6,7 @@ from profileAPI import ProfileAPI, ProfileIconAPI, findProfileAPI, ViewProfileAP
 from lol_teamAPI import lolTeamAPI, mylolTeamAPI, managelolTeamAPI, lolTeamIconAPI, SearchlolTeamAPI
 from FriendsAPI import FriendsListAPI
 from PasswordAPI import ChangePasswordAPI
+from TournamentAPI import CreateTournamentAPI
 
 app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {
@@ -44,6 +45,8 @@ api.add_resource(mylolTeamAPI, '/my_team/lol')
 api.add_resource(managelolTeamAPI, '/manage_team/lol')
 api.add_resource(lolTeamIconAPI, '/upload_team_icon/lol')
 api.add_resource(SearchlolTeamAPI, '/search_team/lol')
+
+api.add_resource(CreateTournamentAPI, '/create_tournament')
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
