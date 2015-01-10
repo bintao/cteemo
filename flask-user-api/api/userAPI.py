@@ -4,7 +4,7 @@ from mongoengine.errors import NotUniqueError, ValidationError
 from model.user import User
 from model.profile import Profile
 from model import redis_store
-from util.userAuth import auth_required
+from util.userAuth import auth_required, load_token
 from util.emails import send_activate_account_email 
 import requests 
 

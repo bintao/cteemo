@@ -2,7 +2,7 @@ from flask import abort
 from flask.ext.restful import Resource, reqparse
 from model.user import User
 from model import redis_store
-from util.userAuth import auth_required 
+from util.userAuth import auth_required, load_token 
 
 
 passwordParser = reqparse.RequestParser()
