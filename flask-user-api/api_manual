@@ -10,6 +10,9 @@ curl localhost:5000/login -X POST -d "email=123@gmail.com" -d "password=123"
 Change Password
 curl localhost:5000/change_password -X POST --header "token: from login" -d "old_password=123" -d "new_password=123"
 
+Forget Password
+curl localhost:5000/forget_password -X POST -d "email=123@gmail.com" -d "username=test" -d "school=UIUC"
+
 Renew Token 
 curl localhost:5000/login -X GET --header "token: from login api"
 

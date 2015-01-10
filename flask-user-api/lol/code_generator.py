@@ -65,5 +65,5 @@ class lolTournamentCode(object):
         }))
 
 if __name__ == '__main__':
-    test = lolTournamentCode('cteemo','doubi','shadixx','54.149.235.253/match_report/lol','',1,3)
-    print test.generate("Twisted Treeline","TOURNAMENT DRAFT","ALL")
+    test = lolTournamentCode('cteemo','doubi2','dadoubi3','54.149.235.253/match_report/lol','',1,3)
+    print test.generate("Twisted Treeline","BLIND PICK","ALL")

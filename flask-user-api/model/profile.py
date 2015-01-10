@@ -12,3 +12,8 @@ class Profile(db.Document):
 	LOLTeam = db.ReferenceField('LOLTeam')
 	DOTATeam = db.ReferenceField('DOTATeam')
 	HSTONETeam = db.ReferenceField('HSTONETeam')
+
+	def checkInfo(self, username, school):
+		if self.username != username or self.school != school:
+			return False
+		return True
