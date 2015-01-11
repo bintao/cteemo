@@ -61,3 +61,6 @@ def tournament_serialize(tournament):
 		else:
 			result[key] = str(tournament[key])
 	return result
+
+def requests_list_serialize(requests_list):
+	return profile_search_serialize(requests_list)

@@ -190,3 +190,11 @@ class SearchlolTeamAPI(Resource):
 		if school is not None:
 			teams = teams.filter(school=school)
 		return team_search_serialize(teams)
+
+class ViewlolTeamAPI(Resource):
+	def get(self, teamID):
+		team = LOLTeam.objects(id=teamID).first()
+		if team is None:
+			abort(400)
+
+		return team_serialize(team)

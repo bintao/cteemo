@@ -1,6 +1,7 @@
 from model import db
 
 class Profile(db.Document):
+	id = db.SequenceField(primary_key=True)
 	user = db.ReferenceField('User')
 	username = db.StringField()
 	profile_icon = db.URLField()

@@ -2,6 +2,7 @@ from model import db
 from datetime import datetime
 
 class Team(db.Document):
+	id = db.SequenceField(primary_key=True)
 	createTime = db.DateTimeField(default=datetime.now())
 	teamBalance = db.FloatField(default=0)
 	teamName = db.StringField(required=True,unique=True)
