@@ -25,7 +25,7 @@ class LolTeamAPI(Resource):
 		args = teamParser.parse_args()
 		teamName = args['teamName']
 		teamIntro = args['teamIntro']
-		isSchool = (args['isSchool'] == 'True')
+		isSchool = (args['isSchool'] == 'true')
 		school = args['school']
 		team = LOLTeam(teamName=teamName,teamIntro=teamIntro,captain=profile,isSchool=isSchool)
 		if isSchool is True:
@@ -47,7 +47,7 @@ class LolTeamAPI(Resource):
 			return {'status' : 'Not joined any team yet'}
 		team = profile.LOLTeam
 		if team.captain != profile:
-			abort(400)
+			abort(401)
 		# update members' profiles
 		for member in team.members:
 			member.LOLTeam = None

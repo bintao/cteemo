@@ -36,7 +36,7 @@ class UserAPI(Resource):
         redis_store.set(str(user.id), token)
         send_activate_account_email(email,token)
 
-        return ({'status': 'success', 'token': token}, 201)
+        return ({'status': 'success', 'message': 'Please check your email to activate your account.'}, 201)
 
 
 class LoginAPI(Resource):
