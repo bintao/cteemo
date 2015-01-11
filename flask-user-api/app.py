@@ -8,6 +8,7 @@ from api.lol_teamAPI import LolTeamAPI, MylolTeamAPI, ManagelolTeamAPI, LolTeamI
 from api.friendsAPI import FriendsListAPI, FriendsRequestAPI
 from api.passwordAPI import ChangePasswordAPI, ForgetPasswordAPI
 from api.tournamentAPI import CreateTournamentAPI
+from api.reportAPI import LolReportAPI
 
 app = Flask(__name__)
 app.config.from_object('config') 
@@ -44,6 +45,8 @@ api.add_resource(SearchlolTeamAPI, '/search_team/lol')
 api.add_resource(ViewlolTeamAPI, '/view_team/lol/<int:teamID>')
 
 api.add_resource(CreateTournamentAPI, '/create_tournament')
+
+api.add_resource(LolReportAPI, '/match_report/lol')
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

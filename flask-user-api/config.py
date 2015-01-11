@@ -7,10 +7,10 @@ MONGODB_SETTINGS = {
     'password': 'cteemo2015'
 }
 SECRET_KEY = 'flask is cool'
-MAIL_SERVER = 'smtp.mandrillapp.com'
-MAIL_PORT = 587
-MAIL_USE_TLS = True
-MAIL_USE_SSL = False
-MAIL_USERNAME = 'zhuxuefeng1994@126.com'
-MAIL_PASSWORD = 'GP4r-n8kVAILVe8NepkenQ'
-MAIL_DEFAULT_SENDER = 'flaskAPI@github.com'
+MAIL_SERVER = 'smtp.gmail.com'
+MAIL_PORT = 465
+MAIL_USE_TLS = False
+MAIL_USE_SSL = True
+MAIL_USERNAME = 'ios@cteemo.com'
+MAIL_PASSWORD = 'teemo2014'
+MAIL_DEFAULT_SENDER = 'no-reply@cteemo.com'
