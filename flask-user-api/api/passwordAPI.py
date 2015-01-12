@@ -5,6 +5,7 @@ from model.profile import Profile
 from model import redis_store
 from util.userAuth import auth_required, load_token
 from util.emails import send_forget_password_email
+from util.exception import InvalidUsage
 import random
 
 
@@ -23,7 +24,7 @@ class ChangePasswordAPI(Resource):
 
         user = User.objects(id=user_id).first()
         if not user.verify_password(old_password):
-            return {'status': 'error', 'message': 'old password is not correct'}
+            raise InvalidUsage('Password incorrect',401)
         user.hash_password(new_password)
         user.save()
 
@@ -46,7 +47,7 @@ class ForgetPasswordAPI(Resource):
         user_id = load_token(token)
         user = User.objects(id=user_id).first()
         if user is None:
-            return {'status': 'error', 'token': 'Token is not valid'}
+            raise InvalidUsage('User not found',404)
 
         temp_password = (''.join(str(random.randint(0, 9)) for x in range(8)))
         user.hash_password(temp_password)
@@ -65,11 +66,11 @@ class ForgetPasswordAPI(Resource):
 
         user = User.objects(email=email).first()
         if user is None:
-            return {'status': 'error', 'message': 'There is no user associated with the email'}
+            raise InvalidUsage('User not found',404)
 
         profile = Profile.objects(user=user).first()
         if not profile.checkInfo(username, school):
-            return {'status': 'error', 'message': 'The information does not match the record'}
+            raise InvalidUsage('Information does not match',401)
 
         token = user.generate_auth_token(expiration=360000)
         send_forget_password_email(email, token)

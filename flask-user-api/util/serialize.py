@@ -24,6 +24,7 @@ def team_search_serialize(teams):
 	result = list()
 	for team in teams:
 		result.append({
+			'teamID' : str(team.id),
 			'teamName' : team.teamName,
 			'teamIcon' : team.teamIcon,
 			'captain' : team.captain.username,

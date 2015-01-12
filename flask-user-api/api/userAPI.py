@@ -5,7 +5,8 @@ from model.user import User
 from model.profile import Profile
 from model import redis_store
 from util.userAuth import auth_required, load_token
-from util.emails import send_activate_account_email 
+from util.emails import send_activate_account_email
+from util.exception import InvalidUsage 
 import requests 
 
 
@@ -28,9 +29,9 @@ class UserAPI(Resource):
             user.save()
             profile.save()
         except ValidationError, e:
-            return {'status': 'error', 'message': e.message}  
+            raise InvalidUsage(e.message)  
         except NotUniqueError, e:
-            return {'status': 'error', 'message': e.message}
+            raise InvalidUsage(e.message)
 
         token = user.generate_auth_token(expiration=360000)
         redis_store.set(str(user.id), token)
@@ -58,9 +59,9 @@ class LoginAPI(Resource):
         user = User.objects(email=email).first()
 
         if not user or not user.verify_password(password):
-            return {'status': 'error', 'message': 'The email does not exist or password is wrong'}
+            raise InvalidUsage('Email and password do not match')
         if not user.is_activated:
-            return {'status': 'error', 'message': 'The account has not been activated'}
+            raise InvalidUsage('Account not activated')
 
         token = user.generate_auth_token(expiration=360000)
         redis_store.set(str(user.id), token)
@@ -106,7 +107,7 @@ class FBLoginAPI(Resource):
 
         fbuser_info = requests.get('https://graph.facebook.com/me?access_token=%s' %fb_token).json()
         if not fbuser_info.get('id') or fb_id != fbuser_info['id']:
-            abort(406)
+            raise InvalidUsage('User info does not match',406)
 
         fb_email = args['fbemail']
         user = User.objects(email=fb_email).first()
