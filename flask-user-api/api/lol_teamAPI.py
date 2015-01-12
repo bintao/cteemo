@@ -12,7 +12,7 @@ teamParser = reqparse.RequestParser()
 teamParser.add_argument('teamIntro', type=str)
 teamParser.add_argument('teamName', type=str)
 teamParser.add_argument('profileID', type=str) # This profileID is the operand
-teamParser.add_argument('isSchool', type=str) # if 1 then it is a school team
+teamParser.add_argument('isSchool', type=bool) # use boolean
 teamParser.add_argument('school', type=str)
 teamParser.add_argument('page', type=int)
 
@@ -25,7 +25,7 @@ class LolTeamAPI(Resource):
 		args = teamParser.parse_args()
 		teamName = args['teamName']
 		teamIntro = args['teamIntro']
-		isSchool = (args['isSchool'] == 'true')
+		isSchool = args['isSchool']
 		school = args['school']
 		team = LOLTeam(teamName=teamName,teamIntro=teamIntro,captain=profile,isSchool=isSchool)
 		if isSchool is True:
