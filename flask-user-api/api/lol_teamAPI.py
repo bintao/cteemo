@@ -97,9 +97,9 @@ class MylolTeamAPI(Resource):
 			abort(400)
 
 		team = profile.LOLTeam
-		try:
-			team.update(pull__members=profile,safe=True)
-		except:
+	
+		success = team.update(pull__members=profile)
+		if success is 0:
 			return {'status' : 'captain is not allowed to quit'}
 		profile.LOLTeam = None
 		profile.save()
@@ -146,12 +146,11 @@ class ManagelolTeamAPI(Resource):
 		if team.captain != profile:
 			abort(401)
 		# query the player u want to kick
-		try:
-			member = Profile.objects(id=profileID).first()
-			member.LOLTeam = None
-			team.update(pull__members=member,safe=True)
-		except:
+		member = Profile.objects(id=profileID).first()
+		success = team.update(pull__members=member,safe=True)
+		if success is 0:
 			return {'error' : 'member not found'}
+		member.LOLTeam = None
 		team.save()
 		member.save()
 		
@@ -195,6 +194,6 @@ class ViewlolTeamAPI(Resource):
 	def get(self, teamID):
 		team = LOLTeam.objects(id=teamID).first()
 		if team is None:
-			abort(400)
+			abort(404)
 
 		return team_serialize(team)
