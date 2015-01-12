@@ -114,10 +114,12 @@ class FBLoginAPI(Resource):
         if user is None:
             user = User(email=fb_email, fb_id=fbuser_info['id'])
             user.save()
+            
+        profile = Profile.objects(user=user).first()
+        if profile is None:
+            profile = Profile(user=user)
+            profile.save()
 
-        profile = Profile(user=user)
-        profile.save()
-        
         token = user.generate_auth_token(expiration=360000)
         redis_store.set(str(user.id), token)
         return {'token': token}
