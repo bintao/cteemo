@@ -26,7 +26,7 @@ Upload Profile Icon
 curl --form upload=@icon.png --form press=OK localhost:5000/upload_profile_icon -X POST --header "token: from login api"
 
 Find profiles
-curl localhost:5000/search_profile -X GET --header "token: from login api"  -d "username=test" -d "school=UIUC"
+curl localhost:5000/search_profile -X GET --header "token: from login api"  -d "username=test" -d "school=UIUC" -d "page=0"
 
 View profiles
 curl localhost:5000/view_profile/<int:profileID> -X GET
@@ -53,7 +53,7 @@ Leave Team
 curl localhost:5000/my_team/lol -X DELETE --header "token: from login" 
 
 Search Team
-curl localhost:5000/search_team/lol -X GET --header "token: from login" -d "teamName=test" -d "school=UIUC"
+curl localhost:5000/search_team/lol -X GET --header "token: from login" -d "teamName=test" -d "school=UIUC" -d "page=0"
 
 View Team
 curl localhost:5000/view_team/lol/<int:teamID> -X GET

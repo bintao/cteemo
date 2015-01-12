@@ -1,4 +1,4 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, jsonify
 from flask.ext.restful import Resource, Api
 from flask_mail import Mail
 from model import db, bcrypt, redis_store
@@ -9,6 +9,7 @@ from api.friendsAPI import FriendsListAPI, FriendsRequestAPI
 from api.passwordAPI import ChangePasswordAPI, ForgetPasswordAPI
 from api.tournamentAPI import CreateTournamentAPI
 from api.reportAPI import LolReportAPI
+from util.exception import InvalidUsage
 
 app = Flask(__name__)
 app.config.from_object('config') 
@@ -48,8 +49,14 @@ api.add_resource(CreateTournamentAPI, '/create_tournament')
 
 api.add_resource(LolReportAPI, '/match_report/lol')
 
+@app.errorhandler(InvalidUsage)
+def handle_invalid_usage(error):
+	response = jsonify(error.to_dict())
+	response.status_code = error.status_code
+	return response
+
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0')
+	app.run(debug=True,host='0.0.0.0')
 
 
 

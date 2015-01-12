@@ -3,6 +3,7 @@ from flask.ext.restful import Resource, reqparse
 from model.profile import Profile
 from util.userAuth import auth_required
 from util.serialize import serialize, profile_search_serialize
+from util.exception import InvalidUsage
 from mongoengine.queryset import Q
 import boto
 import os
@@ -80,7 +81,7 @@ class FindProfileAPI(Resource):
         school = args['school']
         page = args['page']
         if (username is None and school is None):
-            abort(400)
+            raise InvalidUsage('No argument provided')
         if page is None:
             page = 0
 
@@ -96,6 +97,6 @@ class ViewProfileAPI(Resource):
     def get(self, profileID):
         profile = Profile.objects(id=profileID).first()
         if profile is None:
-            abort(400)
+            raise InvalidUsage('Profile not found',404)
 
         return serialize(profile)

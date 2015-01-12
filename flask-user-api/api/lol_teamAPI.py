@@ -5,6 +5,7 @@ from model.profile import Profile
 from model.lol_team import LOLTeam
 from util.userAuth import auth_required
 from util.serialize import team_serialize, team_search_serialize
+from util.exception import InvalidUsage
 import boto
 import os
 
@@ -21,7 +22,7 @@ class LolTeamAPI(Resource):
 	def post(self, user_id):
 		profile = Profile.objects(user=user_id).first()
 		if profile.LOLTeam is not None:
-			return {'status' : 'Only one team per game allowed'}
+			raise InvalidUsage('Only one team per game allowed')
 		args = teamParser.parse_args()
 		teamName = args['teamName']
 		teamIntro = args['teamIntro']
@@ -33,9 +34,9 @@ class LolTeamAPI(Resource):
 		try:
 			team.save()
 		except ValidationError, e:
-			return {'status': 'error', 'message': e.message}  
+			raise InvalidUsage(e.message)  
 		except NotUniqueError, e:
-			return {'status': 'error', 'message': e.message}
+			raise InvalidUsage(e.message)
 		profile.LOLTeam = team
 		profile.save()
 		return team_serialize(team)
@@ -44,10 +45,10 @@ class LolTeamAPI(Resource):
 	def delete(self, user_id):
 		profile = Profile.objects(user=user_id).first()
 		if profile.LOLTeam is None:
-			return {'status' : 'Not joined any team yet'}
+			raise InvalidUsage('Not joined any team yet')
 		team = profile.LOLTeam
 		if team.captain != profile:
-			abort(401)
+			raise InvalidUsage('Unauthorized',401)
 		# update members' profiles
 		for member in team.members:
 			member.LOLTeam = None
@@ -63,7 +64,7 @@ class MylolTeamAPI(Resource):
 	def get(self, user_id):
 		profile = Profile.objects(user=user_id).first()
 		if profile.LOLTeam is None:
-			return {'status' : 'Not joined any team yet'}
+			raise InvalidUsage('Not joined any team yet')
 		team = profile.LOLTeam
 		return team_serialize(team)
 
@@ -72,17 +73,17 @@ class MylolTeamAPI(Resource):
 		args = teamParser.parse_args()
 		profile = Profile.objects(user=user_id).first()
 		if profile.LOLTeam is not None:
-			return {'status' : 'Already joined a team'}
+			raise InvalidUsage('Already joined a team')
 
 		teamName = args['teamName']
 		team = LOLTeam.objects(teamName=teamName).first()
 		if team is None:
-			return {'status' : 'team not found'}
+			raise InvalidUsage('Team not found',404)
 		try:
 			assert len(team.members) < 6
 			team.members.append(profile)
 		except:
-			return {'status' : 'team is full'}
+			raise InvalidUsage('Team is full', 403)
 		profile.LOLTeam = team
 
 		team.save()
@@ -97,10 +98,11 @@ class MylolTeamAPI(Resource):
 			abort(400)
 
 		team = profile.LOLTeam
+		if team.captain == profile:
+			raise InvalidUsage('Captain is not allowed to quit')
 	
-		success = team.update(pull__members=profile)
-		if success is 0:
-			return {'status' : 'captain is not allowed to quit'}
+		team.update(pull__members=profile)
+
 		profile.LOLTeam = None
 		profile.save()
 		team.save()
@@ -118,16 +120,16 @@ class ManagelolTeamAPI(Resource):
 		if team is None:
 			abort(400)
 		if team.captain != profile:
-			abort(401)
+			raise InvalidUsage('Unauthorized',401)
 		# query the player u want to invite
 		profile = Profile.objects(id=profileID).first()
 		if profile is None:
-			return {'status' : 'user not found'}
+			raise InvalidUsage('Member not found',404)
 		try:
 			assert len(team.members) < 6
 			team.members.append(profile)
 		except:
-			return {'status' : 'team is full'}
+			raise InvalidUsage('Team is full',403)
 		profile.LOLTeam = team
 		team.save()
 		profile.save()
@@ -144,12 +146,14 @@ class ManagelolTeamAPI(Resource):
 		if team is None:
 			abort(400)
 		if team.captain != profile:
-			abort(401)
+			raise InvalidUsage('Unauthorized',401)
 		# query the player u want to kick
 		member = Profile.objects(id=profileID).first()
-		success = team.update(pull__members=member,safe=True)
-		if success is 0:
-			return {'error' : 'member not found'}
+		if member == profile:
+			raise InvalidUsage('Cannot kick yourself')
+
+		team.update(pull__members=member)
+		
 		member.LOLTeam = None
 		team.save()
 		member.save()
@@ -163,7 +167,7 @@ class LolTeamIconAPI(Resource):
 		team = profile.LOLTeam
 		# prevent bad request
 		if team.captain != profile:
-			abort(401)
+			raise InvalidUsage('Unauthorized',401)
 		uploaded_file = request.files['upload']
 		filename = "_".join([user_id, uploaded_file.filename])
 		conn = boto.connect_s3('AKIAJAQHGWIZDOAEQ65A', 'FpmnFv/jte9ral/iXHtL8cDUnuKXAgAqp9aXVQMI')
@@ -182,18 +186,20 @@ class SearchlolTeamAPI(Resource):
 		school = args['school']
 		page = args['page']
 		if teamName is None and school is None:
-			abort(400)
+			raise InvalidUsage('No argument provided')
 		teams = LOLTeam.objects.only('teamName','school','captain','teamIcon')
 		if teamName is not None:
 			teams = teams.filter(teamName__icontains=teamName)
 		if school is not None:
 			teams = teams.filter(school=school)
-		return team_search_serialize(teams)
+		if page is None:
+			page = 0
+		return team_search_serialize(teams[10*page:10*(page+1)])
 
 class ViewlolTeamAPI(Resource):
 	def get(self, teamID):
 		team = LOLTeam.objects(id=teamID).first()
 		if team is None:
-			abort(404)
+			raise InvalidUsage('Team not found',404)
 
 		return team_serialize(team)
