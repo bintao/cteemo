@@ -3,8 +3,9 @@ from flask.ext.restful import Resource, reqparse
 from mongoengine.errors import NotUniqueError, ValidationError
 from model.profile import Profile
 from model.lol_team import LOLTeam
+from model.request import Request
 from util.userAuth import auth_required
-from util.serialize import team_serialize, team_search_serialize
+from util.serialize import team_serialize, team_search_serialize, requests_list_serialize
 from util.exception import InvalidUsage
 import boto
 import os
@@ -77,8 +78,10 @@ class MylolTeamAPI(Resource):
 
 		teamName = args['teamName']
 		team = LOLTeam.objects(teamName=teamName).first()
+
 		if team is None:
 			raise InvalidUsage('Team not found',404)
+
 		try:
 			assert len(team.members) < 6
 			team.members.append(profile)
@@ -177,7 +180,7 @@ class LolTeamIconAPI(Resource):
 		team.teamIcon = 'https://s3-us-west-2.amazonaws.com/team-icon/%s' %filename
 		team.save()
 		return team_serialize(team)
-        
+		
 class SearchlolTeamAPI(Resource):
 	@auth_required
 	def get(self, user_id):
@@ -203,3 +206,104 @@ class ViewlolTeamAPI(Resource):
 			raise InvalidUsage('Team not found',404)
 
 		return team_serialize(team)
+
+class InviteTeamRequestAPI(Resource):
+	@auth_required
+	def get(self, user_id):
+		request = Request.objects(user=user_id,type='invite').only('requests_list').first()
+		if request is None:
+			return {}
+
+		return requests_list_serialize(request)
+
+	@auth_required
+	def post(self, user_id):
+		args = teamParser.parse_args()
+		profileID = args['profileID']
+
+		request = Request.objects(user=user_id,type='invite').only('requests_list').first()
+		if request is None:
+			raise InvalidUsage('Request is illegal')
+
+		team = request.LOLTeam
+		request.update(pull__requests_list=profileID)
+	
+		if team is None:
+			raise InvalidUsage('Team not found',404)
+
+		profile = Profile.objects(user=user_id).first()
+		try:
+			assert len(team.members) < 6
+			team.members.append(profile)
+		except:
+			raise InvalidUsage('Team is full', 403)
+		profile.LOLTeam = team
+
+		team.save()
+		profile.save()
+
+		return team_serialize(team)
+
+	@auth_required
+	def delete(self, user_id):
+		args = teamParser.parse_args()
+		profileID = args['profileID']
+
+		request = Request.objects(user=user_id, type='invite').only('requests_list').first()
+		if request is None:
+			raise InvalidUsage('Request does not exist')
+
+		request.update(pull__requests_list=profileID)
+		return {'status' : 'success'}
+
+class JoinTeamRequestAPI(Resource):
+	@auth_required
+	def get(self, user_id):
+		request = Request.objects(user=user_id,type='join').only('requests_list').first()
+		if request is None:
+			return {}
+
+		return requests_list_serialize(request)
+
+	@auth_required
+	def post(self, user_id):
+		args = teamParser.parse_args()
+		profileID = args['profileID']
+
+		request = Request.objects(user=user_id, type='join').only('requests_list').first()
+		if request is None:
+			raise InvalidUsage('Request does not exist')
+
+		captain = Profile.objects(user=user_id).first()
+		team = captain.LOLTeam
+		if team is None:
+			raise InvalidUsage('Illegal operation from frontend')
+
+		if team.captain != captain:
+			raise InvalidUsage('Unauthorized',401)
+		# query the player u want to invite
+		profile = Profile.objects(id=profileID).first()
+		if profile is None:
+			raise InvalidUsage('Member not found',404)
+		try:
+			assert len(team.members) < 6
+			team.members.append(profile)
+		except:
+			raise InvalidUsage('Team is full',403)
+		profile.LOLTeam = team
+		team.save()
+		profile.save()
+
+		return team_serialize(team)
+
+	@auth_required
+	def delete(self, user_id):
+		args = teamParser.parse_args()
+		profileID = args['profileID']
+
+		request = Request.objects(user=user_id, type='join').only('requests_list').first()
+		if request is None:
+			raise InvalidUsage('Request does not exist')
+
+		request.update(pull__requests_list=profileID)
+		return {'status' : 'success'}

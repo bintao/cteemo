@@ -59,9 +59,21 @@ def tournament_serialize(tournament):
 	for key in tournament:
 		if key == 'creator':
 			result[key] = tournament[key].username
+		elif key == 'rounds':
+			result[key] = round_serialize(tournament[key])
 		else:
 			result[key] = str(tournament[key])
 	return result
 
 def requests_list_serialize(requests_list):
 	return profile_search_serialize(requests_list)
+
+def round_serialize(rounds):
+	result = list()
+	for round in rounds:
+		result.append({
+			'round' : round.roundName,
+			'time' : str(round.startTime),
+			'bestOfN' : round.bestOfN
+			})
+	return result

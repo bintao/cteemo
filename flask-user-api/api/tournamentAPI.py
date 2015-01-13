@@ -1,3 +1,4 @@
+from __future__ import division
 from flask import request, abort
 from flask.ext.restful import Resource, reqparse
 from mongoengine.errors import NotUniqueError, ValidationError
@@ -62,7 +63,7 @@ class CreateTournamentAPI(Resource):
 			return {'status' : 'error', 'message' : e.message}
 		except NotUniqueError,e:
 			return {'status' : 'error', 'message' : e.message}
-		rule = Rule(team_size=team_size, map=map, pick=pick, tournament=tournament)
+		rule = Rule(team_size=teamSize, map=map, pick=pick, tournament=tournament)
 		rule.save()
 
 		return tournament_serialize(tournament)
