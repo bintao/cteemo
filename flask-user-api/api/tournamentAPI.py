@@ -55,7 +55,7 @@ class CreateTournamentAPI(Resource):
 		for i in range(roundNumber):
 			round = Round(roundName=str(Fraction(2*(i+1)/size))+'Final', startTime=rounds[i]['startTime'], bestOfN=rounds[i]['bestOfN'])
 			round.save()
-			tournament.update(push__rounds=round)
+			tournament.rounds.append(round)
 
 		try:
 			tournament.save()
