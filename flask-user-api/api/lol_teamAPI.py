@@ -215,7 +215,7 @@ class InviteTeamRequestAPI(Resource):
 		if request is None:
 			return {}
 
-		return requests_list_serialize(request)
+		return requests_list_serialize(request.requests_list)
 
 	@auth_required
 	def post(self, user_id):
@@ -264,7 +264,7 @@ class JoinTeamRequestAPI(Resource):
 		if request is None:
 			return {}
 
-		return requests_list_serialize(request)
+		return requests_list_serialize(request.requests_list)
 
 	@auth_required
 	def post(self, user_id):
