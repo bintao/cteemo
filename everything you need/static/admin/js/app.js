@@ -41,6 +41,6 @@ config(['$routeProvider',
 ]);
 
 // var loginUrl = "http://localhost:5000/login"
-var loginUrl = "https://54.149.235.253:4000/login"
-var url = 'https://54.149.235.253:4000';
+var loginUrl = "http://54.149.235.253:4000/login"
+var url = 'http://54.149.235.253:4000';
 // var url = 'http://localhost:5000'

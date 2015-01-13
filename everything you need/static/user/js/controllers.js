@@ -8,7 +8,7 @@ angular.module('myApp.controllers', [])
             var title = $routeParams['title'];
 
             $http({
-                url: 'https://54.149.235.253:4000/news',
+                url: 'http://54.149.235.253:4000/news',
                 method: 'GET',
                 params: {
                     title: title
