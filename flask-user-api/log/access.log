@@ -1,3 +1,8 @@
 "127.0.0.1 - - [11/Jan/2015:23:00:28] "POST /create_team/lol HTTP/1.1" 200 44 "-" "curl/7.35.0"
 "127.0.0.1 - - [12/Jan/2015:16:11:17] "POST /create_team/lol HTTP/1.1" 500 51 "-" "curl/7.35.0"
 "127.0.0.1 - - [12/Jan/2015:16:11:41] "GET /my_team/lol HTTP/1.1" 200 309 "-" "curl/7.35.0"
+98.253.63.111 - - [12/Jan/2015:21:39:41 -0600] "POST /login HTTP/1.1" 200 159 "-" "python-requests/2.2.1 CPython/2.7.6 Linux/3.13.0-32-generic"
+98.253.63.111 - - [12/Jan/2015:21:40:07 -0600] "POST /login HTTP/1.1" 200 159 "-" "python-requests/2.2.1 CPython/2.7.6 Linux/3.13.0-32-generic"
+98.253.63.111 - - [12/Jan/2015:21:40:07 -0600] "GET /search_team/lol HTTP/1.1" 200 92 "-" "python-requests/2.2.1 CPython/2.7.6 Linux/3.13.0-32-generic"
+98.253.63.111 - - [12/Jan/2015:21:40:07 -0600] "GET /view_team/lol/4 HTTP/1.1" 200 309 "-" "python-requests/2.2.1 CPython/2.7.6 Linux/3.13.0-32-generic"
+98.253.63.111 - - [12/Jan/2015:21:40:09 -0600] "POST /create_tournament HTTP/1.1" 200 341 "-" "python-requests/2.2.1 CPython/2.7.6 Linux/3.13.0-32-generic"
