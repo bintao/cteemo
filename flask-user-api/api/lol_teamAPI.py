@@ -85,10 +85,10 @@ class MylolTeamAPI(Resource):
 		if team is None:
 			raise InvalidUsage('Team not found',404)
 
-		captain = team.captain.user
-		request = Request.objects(user=captain.id,type='join').only('requests_list').first()
+		captain = team.captain
+		request = Request.objects(user=captain.user,type='join').only('requests_list').first()
 		if request is None:
-			request = Request(user=captain.id,type='join')
+			request = Request(user=captain.user,type='join')
 			request.save()
 		request.update(add_to_set__requests_list=profile)
 
@@ -136,7 +136,7 @@ class ManagelolTeamAPI(Resource):
 		if request is None:
 			request = Request(user=profile.user,type='invite')
 			request.save()
-		request.update(add_to_set__requests_list=profile)
+		request.update(add_to_set__requests_list=team.captain)
 
 		return {'status' : 'success'}
 
