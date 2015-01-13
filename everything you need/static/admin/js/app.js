@@ -41,6 +41,6 @@ config(['$routeProvider',
 ]);
 
 // var loginUrl = "http://localhost:5000/login"
-var loginUrl = "https://floating-retreat-4846.herokuapp.com/login"
-var url = 'https://lit-everglades-2593.herokuapp.com';
+var loginUrl = "https://54.149.235.253:4000/login"
+var url = 'https://54.149.235.253:4000';
 // var url = 'http://localhost:5000'
