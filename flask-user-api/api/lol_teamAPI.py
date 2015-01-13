@@ -16,7 +16,7 @@ import os
 teamParser = reqparse.RequestParser()
 teamParser.add_argument('teamIntro', type=str)
 teamParser.add_argument('teamName', type=str)
-teamParser.add_argument('profileID', type=str) # This profileID is the operand
+teamParser.add_argument('profileID', type=int) # This profileID is the operand
 teamParser.add_argument('isSchool', type=bool) # use boolean
 teamParser.add_argument('school', type=str)
 teamParser.add_argument('page', type=int)
@@ -89,6 +89,7 @@ class MylolTeamAPI(Resource):
 		request = Request.objects(user=captain.id,type='join').only('requests_list').first()
 		if request is None:
 			request = Request(user=captain.id,type='join')
+			request.save()
 		request.update(add_to_set__requests_list=profile)
 
 		return {'status' : 'success'}
@@ -134,6 +135,7 @@ class ManagelolTeamAPI(Resource):
 		request = Request.objects(user=profile.user,type='invite').only('requests_list').first()
 		if request is None:
 			request = Request(user=profile.user,type='invite')
+			request.save()
 		request.update(add_to_set__requests_list=profile)
 
 		return {'status' : 'success'}

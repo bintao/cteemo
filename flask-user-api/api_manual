@@ -40,14 +40,32 @@ curl localhost:5000/my_team/lol -X GET --header "token: from login"
 Disband LOL Team
 curl localhost:5000/create_team/lol -X DELETE --header "token: from login"
 
-Invite Teammates 
+Invite Teammates Request
 curl localhost:5000/manage_team/lol -X POST --header "token: from login" -d "profileID=1"
+
+View Invite Request
+curl localhost:5000/invite_request/lol -X GET --header "token: from login"
+
+Accept Invite Request
+curl localhost:5000/invite_request/lol -X POST --header "token: from login" -d "profileID=person who invites u"
+
+Decline Invite Request
+curl localhost:5000/invite_request/lol -X DELETE --header "token: from login" -d "profileID=person who invites u"
 
 Kick Teammates
 curl localhost:5000/manage_team/lol -X DELETE --header "token: from login" -d "profileID=1"
 
-Join Team
+Join Team Request
 curl localhost:5000/my_team/lol -X POST --header "token: from login" -d "teamName=test"
+
+View Join Request (Captain only function)
+curl localhost:5000/join_request/lol -X GET --header "token: from login"
+
+Accept Join Request
+curl localhost:5000/join_request/lol -X POST --header "token: from login" -d "profileID=person who joins"
+
+Decline Join Request
+curl localhost:5000/join_request/lol -X DELETE --header "token: from login" -d "profileID=person who joins"
 
 Leave Team
 curl localhost:5000/my_team/lol -X DELETE --header "token: from login" 
