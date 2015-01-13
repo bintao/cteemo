@@ -222,15 +222,16 @@ class InviteTeamRequestAPI(Resource):
 		args = teamParser.parse_args()
 		profileID = args['profileID']
 
+		profile = Profile.objects(id=profileID).first()
 		request = Request.objects(user=user_id,type='invite').only('requests_list').first()
-		if request is None:
+		if request is None or profile is None:
 			raise InvalidUsage('Request is illegal')
 
-		team = request.LOLTeam
-		request.update(pull__requests_list=profileID)
-	
-		if team is None:
-			raise InvalidUsage('Team not found',404)
+		team = profile.LOLTeam
+
+		success = request.update(pull__requests_list=profile)
+		if success is 0 or team is None or team.captain != profile:
+			raise InvalidUsage('Request is illegal') 
 
 		profile = Profile.objects(user=user_id).first()
 		try:
@@ -278,12 +279,13 @@ class JoinTeamRequestAPI(Resource):
 		captain = Profile.objects(user=user_id).first()
 		team = captain.LOLTeam
 		if team is None:
-			raise InvalidUsage('Illegal operation from frontend')
+			raise InvalidUsage('Request is illegal')
 
 		if team.captain != captain:
 			raise InvalidUsage('Unauthorized',401)
 		# query the player u want to invite
 		profile = Profile.objects(id=profileID).first()
+		request.update(pull__requests_list=profile)
 		if profile is None:
 			raise InvalidUsage('Member not found',404)
 		try:
