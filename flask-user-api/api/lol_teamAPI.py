@@ -1,3 +1,6 @@
+#
+# Copyright (c) 2015 by Xiaofo Yu.  All Rights Reserved.
+#
 from flask import request, abort
 from flask.ext.restful import Resource, reqparse
 from mongoengine.errors import NotUniqueError, ValidationError
@@ -82,17 +85,13 @@ class MylolTeamAPI(Resource):
 		if team is None:
 			raise InvalidUsage('Team not found',404)
 
-		try:
-			assert len(team.members) < 6
-			team.members.append(profile)
-		except:
-			raise InvalidUsage('Team is full', 403)
-		profile.LOLTeam = team
+		captain = team.captain.user
+		request = Request.objects(user=captain.id,type='join').only('requests_list').first()
+		if request is None:
+			request = Request(user=captain.id,type='join')
+		request.update(add_to_set__requests_list=profile)
 
-		team.save()
-		profile.save()
-
-		return team_serialize(team)
+		return {'status' : 'success'}
 
 	@auth_required
 	def delete(self, user_id):
@@ -130,14 +129,14 @@ class ManagelolTeamAPI(Resource):
 			raise InvalidUsage('Member not found',404)
 		try:
 			assert len(team.members) < 6
-			team.members.append(profile)
 		except:
 			raise InvalidUsage('Team is full',403)
-		profile.LOLTeam = team
-		team.save()
-		profile.save()
+		request = Request.objects(user=profile.user,type='invite').only('requests_list').first()
+		if request is None:
+			request = Request(user=profile.user,type='invite')
+		request.update(add_to_set__requests_list=profile)
 
-		return team_serialize(team)
+		return {'status' : 'success'}
 
 	@auth_required
 	def delete(self, user_id):

@@ -4,7 +4,7 @@ from flask_mail import Mail
 from model import db, bcrypt, redis_store
 from api.userAPI import UserAPI, LoginAPI, FBUserAPI, FBLoginAPI, ActivateAPI
 from api.profileAPI import ProfileAPI, ProfileIconAPI, FindProfileAPI, ViewProfileAPI
-from api.lol_teamAPI import LolTeamAPI, MylolTeamAPI, ManagelolTeamAPI, LolTeamIconAPI, SearchlolTeamAPI, ViewlolTeamAPI
+from api.lol_teamAPI import LolTeamAPI, MylolTeamAPI, ManagelolTeamAPI, LolTeamIconAPI, SearchlolTeamAPI, ViewlolTeamAPI, InviteTeamRequestAPI, JoinTeamRequestAPI
 from api.friendsAPI import FriendsListAPI, FriendsRequestAPI
 from api.passwordAPI import ChangePasswordAPI, ForgetPasswordAPI
 from api.tournamentAPI import CreateTournamentAPI
@@ -44,6 +44,8 @@ api.add_resource(ManagelolTeamAPI, '/manage_team/lol')
 api.add_resource(LolTeamIconAPI, '/upload_team_icon/lol')
 api.add_resource(SearchlolTeamAPI, '/search_team/lol')
 api.add_resource(ViewlolTeamAPI, '/view_team/lol/<int:teamID>')
+api.add_resource(InviteTeamRequestAPI, '/invite_request/lol')
+api.add_resource(JoinTeamRequestAPI, '/join_request/lol')
 
 api.add_resource(CreateTournamentAPI, '/create_tournament')
 
