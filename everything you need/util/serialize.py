@@ -23,7 +23,7 @@ def news_list_serialize(news_list):
                 temp[key] = ''
             else:
                 temp[key] = news[key]
-        temp['news_url'] = "http://xuefeng-zhu.github.io/news-client\/user/#/view/%s" % news['title']
+        temp['news_url'] = "http://54.149.235.253:4000/user/index.html#/view/%s" % news['title']
         result.append(temp)
     return result
 
