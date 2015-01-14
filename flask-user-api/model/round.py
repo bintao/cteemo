@@ -8,3 +8,4 @@ class Round(db.Document):
 	readyTeam = db.ListField(db.ReferenceField('LOLTeam'))
 	checkInNumber = db.IntField(default=0)
 	matches = db.ListField(db.ReferenceField('MatchHistory'))
+	next = db.ReferenceField('Round')

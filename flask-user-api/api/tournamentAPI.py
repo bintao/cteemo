@@ -16,6 +16,7 @@ from model.match_history import MatchHistory
 from util.userAuth import auth_required
 from util.serialize import tournament_serialize, tournament_search_serialize, match_serialize
 from util.exception import InvalidUsage
+from functions.game import update
 import math
 
 tournamentParser = reqparse.RequestParser()
@@ -77,6 +78,10 @@ class CreateTournamentAPI(Resource):
 			round = Round(roundName=str(Fraction(2*(i+1)/size))+' Final', startTime=rounds[i]['startTime'], bestOfN=rounds[i]['bestOfN'])
 			round.save()
 			tournament.rounds.append(round)
+		for i in range(roundNumber-1):
+			tournament.rounds[i].next = tournament.rounds[i+1]
+		tournament.rounds[roundNumber-1].next = None
+
 
 		try:
 			tournament.save()
@@ -210,4 +215,34 @@ class TournamentResultAPI(Resource):
 		win = args['win']
 
 		match = MatchHistory.objects(id=matchID).first()
-		
+		if team == match.teams[0]:
+			index = 0
+		else:
+			index = 1
+		if win is True:
+			match.scores[index] += 0.5
+		else:
+			match.scores[index-1] += 0.5
+
+		round = match.round
+		result = sum(match.scores)
+		if result == round.bestOfN:
+			if int(match.scores[0]) != match.scores[0]:
+				return {'status' : 'Dispute needs screen shots verifying'}
+			if match.scores[0] > match.scores[1]:
+				win_team = match.teams[0]
+				lose_team = match.teams[1]
+			else:
+				win_team = match.teams[1]
+				lose_team = match.teams[0]
+
+			lose_team.inGame = False
+			lose_team.save()
+			round = round.next
+			if round is None:
+				win_team.inGame = False
+				win_team.save()
+				return {'status' : 'Tournament Ended'}
+			update(win_team,round)
+
+		return {'status' : 'success', 'message' : 'Please get tournament code for the next game'}
