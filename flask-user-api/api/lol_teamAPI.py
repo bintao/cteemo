@@ -294,7 +294,10 @@ class JoinTeamRequestAPI(Resource):
 			raise InvalidUsage('Unauthorized',401)
 		# query the player u want to invite
 		profile = Profile.objects(id=profileID).first()
-		request.update(pull__requests_list=profile)
+		success = request.update(pull__requests_list=profile)
+		if success is 0:
+			raise InvalidUsage('Request not found')
+			
 		if profile is None:
 			raise InvalidUsage('Member not found',404)
 		try:
