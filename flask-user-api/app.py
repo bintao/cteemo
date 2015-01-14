@@ -8,7 +8,7 @@ from api.profileAPI import ProfileAPI, ProfileIconAPI, FindProfileAPI, ViewProfi
 from api.lol_teamAPI import LolTeamAPI, MylolTeamAPI, ManagelolTeamAPI, LolTeamIconAPI, SearchlolTeamAPI, ViewlolTeamAPI, InviteTeamRequestAPI, JoinTeamRequestAPI
 from api.friendsAPI import FriendsListAPI, FriendsRequestAPI
 from api.passwordAPI import ChangePasswordAPI, ForgetPasswordAPI
-from api.tournamentAPI import CreateTournamentAPI, JoinTournamentAPI
+from api.tournamentAPI import CreateTournamentAPI, JoinTournamentAPI, TournamentResultAPI, ViewTournamentAPI
 from api.reportAPI import LolReportAPI
 from util.exception import InvalidUsage
 
@@ -52,6 +52,8 @@ api.add_resource(JoinTeamRequestAPI, '/join_request/lol')
 
 api.add_resource(CreateTournamentAPI, '/create_tournament')
 api.add_resource(JoinTournamentAPI, '/join_tournament')
+api.add_resource(TournamentResultAPI, '/report_result')
+api.add_resource(ViewTournamentAPI, '/view_tournament')
 
 api.add_resource(LolReportAPI, '/match_report/lol')
 

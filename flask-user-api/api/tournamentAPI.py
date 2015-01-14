@@ -17,6 +17,7 @@ from util.userAuth import auth_required
 from util.serialize import tournament_serialize, tournament_search_serialize, match_serialize
 from util.exception import InvalidUsage
 from functions.game import update
+from lol.code_generator import lolTournamentCode
 import math
 
 tournamentParser = reqparse.RequestParser()
@@ -179,6 +180,7 @@ class JoinTournamentAPI(Resource):
 matchParser = reqparse.RequestParser()
 matchParser.add_argument('matchID', type=int)
 matchParser.add_argument('win', type=bool)
+matchParser.add_argument('gameID', type=int)
 
 class TournamentResultAPI(Resource):
 	def options(self):
@@ -246,3 +248,39 @@ class TournamentResultAPI(Resource):
 			update(win_team,round)
 
 		return {'status' : 'success', 'message' : 'Please get tournament code for the next game'}
+
+class ViewTournamentAPI(Resource):
+	def options(self):
+		pass
+
+	@auth_required
+	def get(self, user_id):
+		args = tournamentParser.parse_args()
+		tournamentID = args['tournamentID']
+
+		tournament  = Tournament.objects(id=tournamentID).first()
+		if tournament is None:
+			raise InvalidUsage('Tournament Not Found',404)
+
+		return tournament_serialize(tournament)
+	# used to get tournament code
+	@auth_required
+	def post(self, user_id):
+		args = matchParser.parse_args()
+		matchID = args['matchID']
+		gameID = args['gameID']
+
+		match = MatchHistory.objects(id=matchID).first()
+		if match is None:
+			raise InvalidUsage('ji ge yi si a ?')
+		tournamentName = match.tournamentName
+		rule = Rule.objects(tournament=match.tournament).first()
+		team_size = rule.team_size
+		map = rule.map
+		pick = rule.pick
+
+		code = lolTournamentCode(tournamentName,match.teams[0],match.teams[1],gameID,team_size)
+		try:
+			return code.generate(map,pick,'ALL')
+		except:
+			raise InvalidUsage('Tournament is not valid')
