@@ -95,3 +95,9 @@ def posts_list_serialize(posts):
 			'content': post.content
 		})
 	return result
+
+def tournament_search_serialize(tournaments):
+	result = list()
+	for tournament in tournaments:
+		result.append(tournament_serialize(tournament))
+	return result

@@ -91,4 +91,11 @@ curl localhost:5000/friends_list -X POST --header "token: from login api" -d "pr
 Create Tournament
 curl localhost:5000/create_tournament -X POST --header "token: from login api" -d "tournamentName=UIUCvsMIT" -d "isSchool=True" -d "school=UIUC" -d "entry_fee=5" -d "size=16" -d "descriptions=test for what" -d "Total_Prize=999"
 
+Get My Owned Tournaments
+curl localhost:5000/create_tournament -X GET --header "token: from login api" 
 
+Search Tournaments
+curl localhost:5000/join_tournament -X GET --header "token: from login api" -d "tournamentName=UIUCvsMIT" -d "page=0"
+
+Join Tournament
+curl localhost:5000/join_tournament -X POST --header "token: from login api" -d "tournamentID=15"
