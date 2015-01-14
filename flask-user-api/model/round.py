@@ -7,3 +7,4 @@ class Round(db.Document):
 	bestOfN = db.IntField(default=3,max_value=7)
 	readyTeam = db.ListField(db.ReferenceField('LOLTeam'))
 	checkInNumber = db.IntField(default=0)
+	matches = db.ListField(db.ReferenceField('MatchHistory'))

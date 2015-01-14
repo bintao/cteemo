@@ -243,6 +243,8 @@ class InviteTeamRequestAPI(Resource):
 			raise InvalidUsage('Request is illegal') 
 
 		profile = Profile.objects(user=user_id).first()
+		if profile.LOLTeam is not None:
+			raise InvalidUsage('Already joined a team')
 		try:
 			assert len(team.members) < 6
 			team.members.append(profile)
@@ -297,9 +299,11 @@ class JoinTeamRequestAPI(Resource):
 		success = request.update(pull__requests_list=profile)
 		if success is 0:
 			raise InvalidUsage('Request not found')
-			
+
 		if profile is None:
 			raise InvalidUsage('Member not found',404)
+		if profile.LOLTeam is not None:
+			raise InvalidUsage('The user already joined a team')
 		try:
 			assert len(team.members) < 6
 			team.members.append(profile)

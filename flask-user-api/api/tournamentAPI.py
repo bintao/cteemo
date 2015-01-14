@@ -14,7 +14,7 @@ from model.rule import Rule
 from model.round import Round
 from model.match_history import MatchHistory
 from util.userAuth import auth_required
-from util.serialize import tournament_serialize, tournament_search_serialize
+from util.serialize import tournament_serialize, tournament_search_serialize, match_serialize
 from util.exception import InvalidUsage
 import math
 
@@ -149,6 +149,8 @@ class JoinTournamentAPI(Resource):
 		team = profile.LOLTeam
 		if team is None or team.captain != profile:
 			raise InvalidUsage('Only captain can join tournament',401)
+		if team.inGame is True:
+			raise InvalidUsage('One team can only join one tournament at the same time',403)
 		# join the first round
 		round = tournament.rounds[0]
 		round.checkInNumber += 1
@@ -165,5 +167,47 @@ class JoinTournamentAPI(Resource):
 			match.save()
 			team.update(add_to_set__matchHistory=match)
 			opponent.update(add_to_set__matchHistory=match)
+			round.update(add_to_set__matches=match)
 
 		return {'status' : 'success'}
+
+matchParser = reqparse.RequestParser()
+matchParser.add_argument('matchID', type=int)
+matchParser.add_argument('win', type=bool)
+
+class TournamentResultAPI(Resource):
+	def options(self):
+		pass
+
+	@auth_required
+	def get(self, user_id):
+		profile = Profile.objects(user=user_id).first()
+		team = profile.LOLTeam
+		if team is None:
+			raise InvalidUsage('Team not found',404)
+		if team.captain != profile:
+			raise InvalidUsage('Unauthorized',401)
+		if team.inGame is False:
+			raise InvalidUsage('Not in a tournament')
+
+		match = team.matchHistory[-1]
+
+		return match_serialize(match)
+
+	@auth_required
+	def post(self, user_id):
+		profile = Profile.objects(user=user_id).first()
+		team = profile.LOLTeam
+		if team is None:
+			raise InvalidUsage('Team not found',404)
+		if team.captain != profile:
+			raise InvalidUsage('Unauthorized',401)
+		if team.inGame is False:
+			raise InvalidUsage('Not in a tournament')
+
+		args = matchParser.parse_args()
+		matchID = args['matchID']
+		win = args['win']
+
+		match = MatchHistory.objects(id=matchID).first()
+		

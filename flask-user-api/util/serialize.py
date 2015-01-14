@@ -28,7 +28,6 @@ def team_search_serialize(teams):
 			'teamName' : team.teamName,
 			'teamIcon' : team.teamIcon,
 			'captain' : team.captain.username,
-			'school' : team.school
 			})
 	return result
 
@@ -100,4 +99,20 @@ def tournament_search_serialize(tournaments):
 	result = list()
 	for tournament in tournaments:
 		result.append(tournament_serialize(tournament))
+	return result
+
+def match_serialize(match):
+	result = dict()
+	for key in match:
+		if key == 'teams':
+			result[key] = team_search_serialize(match[key])
+		elif key == 'tournament':
+			pass
+		elif key == 'round':
+			result[key] = match[key].roundName
+		else:
+			try:
+				result[key] = str(match[key])
+			except:
+				result[key] = match[key]
 	return result
