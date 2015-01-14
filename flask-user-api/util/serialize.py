@@ -1,7 +1,7 @@
 def serialize(object):
 	result = {}
 	for key in object:
-		if key == "id" or key == "LOLTeam" or key == "DOTATeam" or key == "HSTONETeam" or key == "user":
+		if key == "LOLTeam" or key == "DOTATeam" or key == "HSTONETeam" or key == "user":
 			pass
 		else:
 			result[key] = str(object[key])
@@ -10,7 +10,7 @@ def serialize(object):
 def team_serialize(team):
 	result = dict()
 	for key in team:
-		if key == "id" or key == "matchHistory":
+		if key == "matchHistory":
 			pass
 		elif key == "captain":
 			result['captain'] = profile_search_serialize([team[key]]) 
