@@ -22,6 +22,9 @@ teamParser.add_argument('school', type=str)
 teamParser.add_argument('page', type=int)
 
 class LolTeamAPI(Resource):
+	def options(self):
+		pass
+		
 	@auth_required
 	def post(self, user_id):
 		profile = Profile.objects(user=user_id).first()
@@ -98,7 +101,7 @@ class MylolTeamAPI(Resource):
 	def delete(self, user_id):
 		profile = Profile.objects(user=user_id).first()
 		if profile.LOLTeam is None:
-			abort(400)
+			raise InvalidUsage('Not joined any team yet')
 
 		team = profile.LOLTeam
 		if team.captain == profile:
@@ -117,8 +120,14 @@ class ManagelolTeamAPI(Resource):
 	def post(self, user_id):
 		args = teamParser.parse_args()
 		profileID = args['profileID']
+		teamIntro = args['teamIntro']
+	
 		profile = Profile.objects(user=user_id).first()
 		team = profile.LOLTeam
+		if profileID is None and teamIntro is not None:
+			team.teamIntro = teamIntro
+			team.save()
+			return {'status' : 'success'}
 		# avoid illegal operation
 		if team is None:
 			abort(400)

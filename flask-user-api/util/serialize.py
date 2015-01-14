@@ -1,11 +1,11 @@
 def serialize(object):
-    result = {}
-    for key in object:
-    	if key == "id" or key == "LOLTeam" or key == "DOTATeam" or key == "HSTONETeam" or key == "user":
-    		pass
-    	else:
-       	    result[key] = str(object[key])
-    return result
+	result = {}
+	for key in object:
+		if key == "id" or key == "LOLTeam" or key == "DOTATeam" or key == "HSTONETeam" or key == "user":
+			pass
+		else:
+			result[key] = str(object[key])
+	return result
 
 def team_serialize(team):
 	result = dict()
@@ -76,4 +76,22 @@ def round_serialize(rounds):
 			'time' : str(round.startTime),
 			'bestOfN' : round.bestOfN
 			})
+	return result
+
+def post_user_profile_serialize(profile):
+	return {
+		'id': str(profile.id),
+		'username': profile.username,
+		'profile_icon': profile.profile_icon,
+	}
+
+
+def posts_list_serialize(posts):
+	result = []
+	for post in posts:
+		result.append({
+			'user_profile': post_user_profile_serialize(post.user_profile),
+			'date': post.date.strftime("%B %d, %Y %I:%M%p"),
+			'content': post.content
+		})
 	return result

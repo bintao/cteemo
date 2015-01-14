@@ -43,6 +43,9 @@ curl localhost:5000/create_team/lol -X DELETE --header "token: from login"
 Invite Teammates Request
 curl localhost:5000/manage_team/lol -X POST --header "token: from login" -d "profileID=1"
 
+Edit TeamIntro
+curl localhost:5000/manage_team/lol -X POST --header "token: from login" -d "teamIntro=nothing"
+
 View Invite Request
 curl localhost:5000/invite_request/lol -X GET --header "token: from login"
 

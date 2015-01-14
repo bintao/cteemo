@@ -16,7 +16,7 @@ profileParser.add_argument('intro', type=str)
 profileParser.add_argument('lolID', type=str)
 profileParser.add_argument('dotaID', type=str)
 profileParser.add_argument('hstoneID', type=str)
-profileParser.add_argument('profileID', type=str)
+profileParser.add_argument('profileID', type=int)
 profileParser.add_argument('page', type=int)
 
 class ProfileAPI(Resource):

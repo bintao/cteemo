@@ -1,3 +1,6 @@
+#
+# Copyright (c) 2015 by Xiaofo Yu.  All Rights Reserved.
+#
 from __future__ import division
 from flask import request, abort
 from flask.ext.restful import Resource, reqparse
@@ -11,16 +14,17 @@ from model.round import Round
 from model.match_history import MatchHistory
 from util.userAuth import auth_required
 from util.serialize import tournament_serialize
+from util.exception import InvalidUsage
 import math
 
 tournamentParser = reqparse.RequestParser()
 tournamentParser.add_argument('tournamentName', type=str)
-tournamentParser.add_argument('isSchool', type=str)
+tournamentParser.add_argument('isSchool', type=bool)
 tournamentParser.add_argument('school', type=str)
 tournamentParser.add_argument('descriptions', type=str)
 tournamentParser.add_argument('entryFee', type=int)
 tournamentParser.add_argument('size', type=int)
-tournamentParser.add_argument('tournamentID', type=str)
+tournamentParser.add_argument('tournamentID', type=int)
 tournamentParser.add_argument('totalPrize', type=int)
 #tournamentParser.add_argument('groupStage', type=int)
 tournamentParser.add_argument('teamSize', type=int)
@@ -33,7 +37,7 @@ class CreateTournamentAPI(Resource):
 	def post(self, user_id):
 		args = tournamentParser.parse_args()
 		tournamentName = args['tournamentName']
-		isSchool = (args['isSchool'] == 'true')
+		isSchool = args['isSchool']
 		school = args['school']
 		descriptions = args['descriptions']
 		entryFee = args['entryFee']
@@ -60,9 +64,9 @@ class CreateTournamentAPI(Resource):
 		try:
 			tournament.save()
 		except ValidationError,e:
-			return {'status' : 'error', 'message' : e.message}
+			raise InvalidUsage(e.message)
 		except NotUniqueError,e:
-			return {'status' : 'error', 'message' : e.message}
+			raise InvalidUsage(e.message)
 		rule = Rule(team_size=teamSize, map=map, pick=pick, tournament=tournament)
 		rule.save()
 
