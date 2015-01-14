@@ -17,7 +17,10 @@ def load_token(token):
 def auth_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        token = request.headers['token']
+        try:
+            token = request.headers['token']
+        except:
+            abort(401)
 
         if token is None:
             abort(401)
