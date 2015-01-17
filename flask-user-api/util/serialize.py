@@ -88,6 +88,13 @@ def post_user_profile_serialize(profile):
 		'profile_icon': profile.profile_icon,
 	}
 
+def post_team_serialize(team):
+	return {
+		'teamID' : str(team.id),
+		'teamName' : team.teamName,
+		'captain' : team.captain,
+		'teamIcon' : team.teamIcon
+	}
 
 def posts_list_serialize(posts):
 	result = []
@@ -98,6 +105,15 @@ def posts_list_serialize(posts):
 			'content': post.content
 		})
 	return result
+
+def posts_hehe_serialize(posts):
+	result = list()
+	for post in posts:
+		result.append({
+			'team_profile': post_team_serialize(post.team),
+			'date': post.date.strftime("%B %d, %Y %I:%M%p"),
+			'content': post.content
+			})
 
 def tournament_search_serialize(tournaments):
 	result = list()

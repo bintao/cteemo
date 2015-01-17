@@ -10,7 +10,7 @@ from api.friendsAPI import FriendsListAPI, FriendsRequestAPI
 from api.passwordAPI import ChangePasswordAPI, ForgetPasswordAPI
 from api.tournamentAPI import CreateTournamentAPI, JoinTournamentAPI, TournamentResultAPI, ViewTournamentAPI
 from api.reportAPI import LolReportAPI
-from api.postAPI import PostAPI
+from api.postAPI import PlayerPostAPI, TeamPostAPI
 from util.exception import InvalidUsage
 
 app = Flask(__name__)
@@ -56,7 +56,8 @@ api.add_resource(JoinTournamentAPI, '/join_tournament')
 api.add_resource(TournamentResultAPI, '/report_result')
 api.add_resource(ViewTournamentAPI, '/view_tournament')
 
-api.add_resource(PostAPI, '/post')
+api.add_resource(PlayerPostAPI, '/player_post')
+api.add_resource(TeamPostAPI, '/team_post')
 
 api.add_resource(LolReportAPI, '/match_report/lol')
 

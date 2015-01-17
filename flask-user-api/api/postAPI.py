@@ -1,16 +1,18 @@
 from flask import abort
 from flask.ext.restful import Resource, reqparse
-from model.post import Post
+from model.player_post import PlayerPost
+from model.team_post import TeamPost
 from model.profile import Profile
 from util.userAuth import auth_required
 from util.serialize import posts_list_serialize
+from util.exception import InvalidUsage
 
 postParser = reqparse.RequestParser()
 postParser.add_argument('content', type=str)
 postParser.add_argument('page', type=int)
 
 
-class PostAPI(Resource):
+class PlayerPostAPI(Resource):
 
     @auth_required
     def get(self, user_id):
@@ -19,9 +21,9 @@ class PostAPI(Resource):
         if page is None:
             page = 0
 
-        posts = Post.objects().exclude('user')[10 * page: 10 * (page + 1)]
+        posts = PlayerPost.objects().order_by('-date')[10 * page: 10 * (page + 1)]
         if posts is None:
-            return abort(400)
+        	raise InvalidUsage('No post found',404)
 
         return posts_list_serialize(posts)
 
@@ -31,7 +33,24 @@ class PostAPI(Resource):
         content = args['content']
 
         profile = Profile.objects(user=user_id).first()
-        post = Post(user=user_id, user_profile=profile, content=content)
+        post = PlayerPost(user_profile=profile, content=content)
         post.save()
 
         return {'status': 'success'}
+
+class TeamPostAPI(Resource):
+	def options(self):
+		pass
+
+	@auth_required
+	def get(self, user_id):
+		args = postParser.parse_args()
+		page = args['page']
+		if page is None:
+			page = 0
+
+		posts = TeamPost.objects.order_by('-date')[10 * page: 10* (page + 1)]
+		if posts is None:
+			raise InvalidUsage('No post found',404)
+
+		return posts_list_serialize(posts)

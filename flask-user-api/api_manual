@@ -112,8 +112,15 @@ curl localhost:5000/view_tournament -X GET --header "token: from login api" -d "
 Get Tournament Code for your match
 curl localhost:5000/view_tournament -X POST --header "token: from login api" -d "tournamentID=15" 'gameID=1,2,3?'
 
-Post a Friend Post
-curl localhost:5000/post -X POST --header "token: from login api" -d "content=I want to find someone to talk"
+Post Player Post
+curl localhost:5000/player_post -X POST --header "token: from login api" -d "content=I want to find someone to talk"
 
 Get posts
-curl localhost:5000/post -X GET --header "token: from login api" 
+curl localhost:5000/player_post -X GET --header "token: from login api"
+
+Post Team Post
+curl localhost:5000/team_post -X POST --header "token: from login api" -d "content=I want to find someone to talk"
+
+Get Team Post
+curl localhost:5000/team_post -X GET --header "token: from login api"
+
