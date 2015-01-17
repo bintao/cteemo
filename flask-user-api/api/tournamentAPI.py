@@ -224,11 +224,10 @@ class TournamentResultAPI(Resource):
 		if win is True:
 			match.scores[index] += 0.5
 		else:
-			match.scores[index-1] += 0.5
+			match.scores[index^1] += 0.5
 
 		round = match.round
-		result = sum(match.scores)
-		if result == round.bestOfN:
+		if match.scores[0] > 0.5*round.bestOfN or match.scores[1] > 0.5*round.bestOfN:
 			if int(match.scores[0]) != match.scores[0]:
 				return {'status' : 'Dispute needs screen shots verifying'}
 			if match.scores[0] > match.scores[1]:

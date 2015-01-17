@@ -99,3 +99,21 @@ curl localhost:5000/join_tournament -X GET --header "token: from login api" -d "
 
 Join Tournament
 curl localhost:5000/join_tournament -X POST --header "token: from login api" -d "tournamentID=15"
+
+Get the Latest Match
+curl localhost:5000/report_result -X GET --header "token: from login api"
+
+Report Match Result
+curl localhost:5000/report_result -X POST --header "token: from login api" -d "matchID=int" -d "win=True"
+
+View Specific Tournament
+curl localhost:5000/view_tournament -X GET --header "token: from login api" -d "tournamentID=15"
+
+Get Tournament Code for your match
+curl localhost:5000/view_tournament -X POST --header "token: from login api" -d "tournamentID=15" 'gameID=1,2,3?'
+
+Post a Friend Post
+curl localhost:5000/post -X POST --header "token: from login api" -d "content=I want to find someone to talk"
+
+Get posts
+curl localhost:5000/post -X GET --header "token: from login api" 

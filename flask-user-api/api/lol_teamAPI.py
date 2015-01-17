@@ -123,6 +123,9 @@ class ManagelolTeamAPI(Resource):
 		teamIntro = args['teamIntro']
 	
 		profile = Profile.objects(user=user_id).first()
+		if profileID == profile.id:
+			raise InvalidUsage('Cannot send request to yourself')
+
 		team = profile.LOLTeam
 		if profileID is None and teamIntro is not None:
 			team.teamIntro = teamIntro
@@ -266,7 +269,10 @@ class InviteTeamRequestAPI(Resource):
 		if request is None:
 			raise InvalidUsage('Request does not exist')
 
-		request.update(pull__requests_list=profileID)
+		success = request.update(pull__requests_list=profileID)
+		if success is 0:
+			raise InvalidUsage('Request does not exist')
+			
 		return {'status' : 'success'}
 
 class JoinTeamRequestAPI(Resource):
@@ -324,5 +330,8 @@ class JoinTeamRequestAPI(Resource):
 		if request is None:
 			raise InvalidUsage('Request does not exist')
 
-		request.update(pull__requests_list=profileID)
+		success = request.update(pull__requests_list=profileID)
+		if success is 0:
+			raise InvalidUsage('Request does not exist')
+
 		return {'status' : 'success'}

@@ -1,8 +1,11 @@
 def serialize(object):
 	result = {}
 	for key in object:
-		if key == "LOLTeam" or key == "DOTATeam" or key == "HSTONETeam" or key == "user":
+		if key == "DOTATeam" or key == "HSTONETeam" or key == "user":
 			pass
+		elif key == "LOLTeam":
+			result[key] = object[key].teamName
+			result['LOLTeamID'] = str(object[key])
 		else:
 			result[key] = str(object[key])
 	return result
@@ -28,6 +31,7 @@ def team_search_serialize(teams):
 			'teamName' : team.teamName,
 			'teamIcon' : team.teamIcon,
 			'captain' : team.captain.username,
+			'school' : team.school
 			})
 	return result
 

@@ -8,7 +8,7 @@ class TournamentCodeException(Exception):
 class lolTournamentCode(object):
     def __init__(self,tournament_name,team1,team2,extra_data,team_size):
         self.name = tournament_name+'_'+team1+'vs'+team2
-        self.password = 'bugaosuni'
+        self.password = ''
         self.report_url = '54.149.235.253:5000/match_report/lol'
         self.extra_data = extra_data
         self.team_size = team_size # only supports ints from 1 to 5
@@ -65,5 +65,5 @@ class lolTournamentCode(object):
         }))
 
 if __name__ == '__main__':
-    test = lolTournamentCode('cteemo','doubi2','dadoubi3',1,3)
-    print test.generate("Summoner's Rift","ALL RANDOM","ALL")
+    test = lolTournamentCode('please','join','',1,3)
+    print test.generate("Twisted Treeline","BLIND PICK","ALL")
