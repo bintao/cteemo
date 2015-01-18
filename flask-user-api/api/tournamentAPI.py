@@ -48,7 +48,7 @@ class CreateTournamentAPI(Resource):
 			page = 0
 
 		profile = Profile.objects(user=user_id).first()
-		tournaments = Tournament.objects(creator=profile).only('id','creator','tournamentName','createTime','isEnded','rounds')
+		tournaments = Tournament.objects(creator=profile).only('id','creator','isEnded','createTime','rounds','isFull')
 
 		return tournament_search_serialize(tournaments[5*page:5*(page+1)])
 
@@ -61,7 +61,10 @@ class CreateTournamentAPI(Resource):
 		descriptions = args['descriptions']
 		entryFee = args['entryFee']
 		size = args['size']
-		rounds = request.json['rounds']
+		try:
+			rounds = request.json['rounds']
+		except:
+			raise InvalidUsage('Round information is not valid')
 		teamSize = args['teamSize']
 		#group_stage = args['group_stage']
 		map = args['map']
