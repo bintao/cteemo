@@ -116,7 +116,7 @@ class NewsImageAPI(Resource):
     def post(self):
         uploaded_file = request.files['file']
 
-        conn = boto.connect_s3(os.environ['S3_KEY'], os.environ['S3_SECRET'])
+        conn = boto.connect_s3('AKIAJAQHGWIZDOAEQ65A', 'FpmnFv/jte9ral/iXHtL8cDUnuKXAgAqp9aXVQMI')
         bucket = conn.get_bucket('news-pic')
         key = bucket.new_key(uploaded_file.filename)
         key.set_contents_from_file(uploaded_file)
@@ -142,7 +142,7 @@ class NewsThumbnailAPI(Resource):
         fp.seek(0)
         filename = '_'.join([str(width), str(height), uploaded_file.filename])
 
-        conn = boto.connect_s3(os.environ['S3_KEY'], os.environ['S3_SECRET'])
+        conn = boto.connect_s3('AKIAJAQHGWIZDOAEQ65A', 'FpmnFv/jte9ral/iXHtL8cDUnuKXAgAqp9aXVQMI')
         bucket = conn.get_bucket('news-pic')
         key = bucket.new_key(filename)
         key.set_contents_from_file(fp)
