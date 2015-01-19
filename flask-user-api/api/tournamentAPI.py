@@ -19,6 +19,7 @@ from util.exception import InvalidUsage
 from functions.game import update
 from lol.code_generator import lolTournamentCode
 import math
+import boto
 
 tournamentParser = reqparse.RequestParser()
 tournamentParser.add_argument('tournamentName', type=str)
@@ -178,6 +179,7 @@ class JoinTournamentAPI(Resource):
 			opponent.update(add_to_set__matchHistory=match)
 			round.update(add_to_set__matches=match)
 		team.inGame = True
+		team.save()
 
 		return {'status' : 'success'}
 
@@ -287,3 +289,22 @@ class ViewTournamentAPI(Resource):
 			return code.generate(map,pick,'ALL')
 		except:
 			raise InvalidUsage('Tournament is not valid')
+
+class ScreenShotAPI(Resource):
+	
+	@auth_required
+	def post(self, user_id):
+		profile = Profile.objects(user=user_id).first()
+		team = profile.LOLTeam
+		# prevent bad request
+		if team.captain != profile:
+			raise InvalidUsage('Unauthorized',401)
+		uploaded_file = request.files['upload']
+		filename = "_".join([user_id, uploaded_file.filename])
+		conn = boto.connect_s3('AKIAJAQHGWIZDOAEQ65A', 'FpmnFv/jte9ral/iXHtL8cDUnuKXAgAqp9aXVQMI')
+		bucket = conn.get_bucket('team-icon')
+		key = bucket.new_key(filename)
+		key.set_contents_from_file(uploaded_file)
+		team.teamIcon = 'https://s3-us-west-2.amazonaws.com/team-icon/%s' %filename
+		team.save()
+		return team_serialize(team)

@@ -9,3 +9,4 @@ class MatchHistory(db.Document):
 	tournamentName = db.StringField()
 	tournament = db.ReferenceField('Tournament')
 	round = db.ReferenceField('Round')
+	screen_shots = db.ListField(db.URLField())

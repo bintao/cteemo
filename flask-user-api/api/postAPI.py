@@ -14,29 +14,29 @@ postParser.add_argument('page', type=int)
 
 class PlayerPostAPI(Resource):
 
-    @auth_required
-    def get(self, user_id):
-        args = postParser.parse_args()
-        page = args['page']
-        if page is None:
-            page = 0
+	@auth_required
+	def get(self, user_id):
+		args = postParser.parse_args()
+		page = args['page']
+		if page is None:
+			page = 0
 
-        posts = PlayerPost.objects().order_by('-date')[10 * page: 10 * (page + 1)]
-        if posts is None:
-        	raise InvalidUsage('No post found',404)
+		posts = PlayerPost.objects().order_by('-date')[10 * page: 10 * (page + 1)]
+		if posts is None:
+			raise InvalidUsage('No post found',404)
 
-        return posts_list_serialize(posts)
+		return posts_list_serialize(posts)
 
-    @auth_required
-    def post(self, user_id):
-        args = postParser.parse_args()
-        content = args['content']
+	@auth_required
+	def post(self, user_id):
+		args = postParser.parse_args()
+		content = args['content']
 
-        profile = Profile.objects(user=user_id).first()
-        post = PlayerPost(user_profile=profile, content=content)
-        post.save()
+		profile = Profile.objects(user=user_id).first()
+		post = PlayerPost(user_profile=profile, content=content)
+		post.save()
 
-        return {'status': 'success'}
+		return {'status': 'success'}
 
 class TeamPostAPI(Resource):
 	def options(self):
@@ -54,3 +54,19 @@ class TeamPostAPI(Resource):
 			raise InvalidUsage('No post found',404)
 
 		return posts_list_serialize(posts)
+
+	@auth_required
+	def post(self, user_id):
+		args = postParser.parse_args()
+		content = args['content']
+
+		profile = Profile.objects(user=user_id).first()
+		team = profile.LOLTeam
+
+		if team.captain != profile:
+			raise InvalidUsage('Unauthorized',401)
+
+		post = TeamPost(user_profile=profile, team=team)
+		post.save()
+
+		return {'status' : 'success'}
