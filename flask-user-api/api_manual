@@ -110,7 +110,7 @@ View Specific Tournament
 curl localhost:5000/view_tournament -X GET --header "token: from login api" -d "tournamentID=15"
 
 Get Tournament Code for your match
-curl localhost:5000/view_tournament -X POST --header "token: from login api" -d "tournamentID=15" 'matchID=1,2,3?'
+curl localhost:5000/view_tournament -X POST --header "token: from login api" -d "tournamentID=15" -d "gameID=1,2,3?" -d "matchID=1"
 
 Post Player Post
 curl localhost:5000/player_post -X POST --header "token: from login api" -d "content=I want to find someone to talk"
