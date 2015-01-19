@@ -177,6 +177,7 @@ class JoinTournamentAPI(Resource):
 			team.update(add_to_set__matchHistory=match)
 			opponent.update(add_to_set__matchHistory=match)
 			round.update(add_to_set__matches=match)
+		team.inGame = True
 
 		return {'status' : 'success'}
 
@@ -274,7 +275,7 @@ class ViewTournamentAPI(Resource):
 
 		match = MatchHistory.objects(id=matchID).first()
 		if match is None:
-			raise InvalidUsage('ji ge yi si a ?')
+			raise InvalidUsage('Match not found',404)
 		tournamentName = match.tournamentName
 		rule = Rule.objects(tournament=match.tournament).first()
 		team_size = rule.team_size
