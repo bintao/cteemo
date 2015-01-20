@@ -63,6 +63,9 @@ class TeamPostAPI(Resource):
 		profile = Profile.objects(user=user_id).first()
 		team = profile.LOLTeam
 
+		if team is None:
+			raise InvalidUsage('No team')
+
 		if team.captain != profile:
 			raise InvalidUsage('Unauthorized',401)
 

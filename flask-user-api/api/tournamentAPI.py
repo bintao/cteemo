@@ -291,20 +291,30 @@ class ViewTournamentAPI(Resource):
 			raise InvalidUsage('Tournament is not valid')
 
 class ScreenShotAPI(Resource):
-	
+	def options(self):
+		pass
+
 	@auth_required
 	def post(self, user_id):
+		args = matchParser.parse_args()
+		matchID = args['matchID']
+		gameID = args['gameID']
+
+		match = MatchHistory.objects(id=matchID).first()
+		if match is None:
+			raise InvalidUsage('Match not found',404)
 		profile = Profile.objects(user=user_id).first()
 		team = profile.LOLTeam
 		# prevent bad request
 		if team.captain != profile:
 			raise InvalidUsage('Unauthorized',401)
+		
 		uploaded_file = request.files['upload']
-		filename = "_".join([user_id, uploaded_file.filename])
+		filename = "_".join([team.teamName, matchID, gameID, uploaded_file.filename])
 		conn = boto.connect_s3('AKIAJAQHGWIZDOAEQ65A', 'FpmnFv/jte9ral/iXHtL8cDUnuKXAgAqp9aXVQMI')
-		bucket = conn.get_bucket('team-icon')
+		bucket = conn.get_bucket('lol-reports')
 		key = bucket.new_key(filename)
 		key.set_contents_from_file(uploaded_file)
-		team.teamIcon = 'https://s3-us-west-2.amazonaws.com/team-icon/%s' %filename
+		team.teamIcon = 'https://s3-us-west-2.amazonaws.com/lol-reports/%s' %filename
 		team.save()
 		return team_serialize(team)
