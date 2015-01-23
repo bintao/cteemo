@@ -12,7 +12,7 @@ MAIL_PORT = 465
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
 MAIL_USERNAME = 'ios@cteemo.com'
-MAIL_PASSWORD = 'teemo2014'
+MAIL_PASSWORD = 'teemo2016'
 MAIL_DEFAULT_SENDER = 'no-reply@cteemo.com'
 
 DEBUG = True
