@@ -11,8 +11,8 @@ MAIL_SERVER = 'smtp.gmail.com'
 MAIL_PORT = 465
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
-MAIL_USERNAME = 'ios@cteemo.com'
-MAIL_PASSWORD = 'teemo2016'
+MAIL_USERNAME = 'support@cteemo.com'
+MAIL_PASSWORD = 'cteemo2016'
 MAIL_DEFAULT_SENDER = 'no-reply@cteemo.com'
 
 DEBUG = True
