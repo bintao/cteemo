@@ -128,6 +128,8 @@ class ManagelolTeamAPI(Resource):
 
 		team = profile.LOLTeam
 		if profileID is None and teamIntro is not None:
+			if team.captain is not profile:
+				raise InvalidUsage('Unauthorized',401)
 			team.teamIntro = teamIntro
 			team.save()
 			return {'status' : 'success'}
@@ -168,7 +170,9 @@ class ManagelolTeamAPI(Resource):
 		if member == profile:
 			raise InvalidUsage('Cannot kick yourself')
 
-		team.update(pull__members=member)
+		success = team.update(pull__members=member)
+		if success is 0:
+			raise InvalidUsage('Member not found')
 		
 		member.LOLTeam = None
 		team.save()
