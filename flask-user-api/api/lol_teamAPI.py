@@ -173,7 +173,7 @@ class ManagelolTeamAPI(Resource):
 		if member == profile:
 			raise InvalidUsage('Cannot kick yourself')
 		try:
-			success = team.update(pull__members=member)
+			success = team.update(pull__members=member,safe=True)
 		except:
 			raise InvalidUsage('Member not found')
 		if success is 0:
