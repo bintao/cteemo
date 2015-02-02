@@ -18,13 +18,11 @@ def team_request(token,data):
     r = requests.post(teammate_request, headers=headers,data=data)
     return r.json()
 
-#data = profile
 def view_request(token):
     headers = {'token': token}
     r = requests.get(invite_request, headers=headers)
     return r.json()
 
-#data = profile
 def accept(token,data):
     headers = {'token': token}
     r = requests.post(invite_request, headers=headers,data=data)
@@ -55,8 +53,4 @@ def join_decline(token,data):
     r = requests.delete(join_request, headers=headers,data=data)
     return r.json()
 
-print team_request(token2,profile)
-
-print view_request(token)
-
-print accept(token,)
+print join_view(token2)

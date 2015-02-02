@@ -22,18 +22,29 @@ userdata= {
 'intro':'22'
  }
 
-
-
-
+create_tournament = 'http://54.149.235.253:5000/create_tournament'
+ 
+tournament_data = {
+    'tournamentName': 'UIUCvsMIT',
+	'isSchool': True,
+	'entry_fee': 5,
+	'school': 'UIUC',
+    'size': 4,
+    'descriptions': 'test for what',
+    'Total_Prize': 5 ,
+    'rounds':[{'startTime': str(datetime.now()),'bestOfN' : 3 },
+               {'startTime': str(datetime.now()),'bestOfN' : 3 }]
+}
+ 
 team_data = {
-	'teamName': 'Toddm',
+	'teamName': 'Todd',
 	'teamIntro': 'hahakk',
 	'isSchool': True,
 	'school': 'UIUC'
      }
 
 search_data  = {'school': 'UIUC'}
-
+        
     
 def upload(token,data):
     headers = {'token': token} 
@@ -44,16 +55,20 @@ def get(token):
     headers = {'token': token} 
     r = requests.get(get_team, headers=headers)
     return r.json()
-
-
+    
 def create(token, data):
     headers = {'token': token} 
     r = requests.post(create_team, headers=headers,data=data)
     return r.json()
-
+    
 def delete(token):
     headers = {'token': token} 
     r = requests.delete(create_team, headers=headers)
+    return r.json()
+
+def join(token,data):
+    headers = {'token': token} 
+    r = requests.post(get_team, headers=headers,data=data)
     return r.json()
     
 def leave(token):
@@ -76,6 +91,10 @@ def get_profile(token):
     r = requests.get(profile,headers=headers)
     return r.json()
 
+def tournament(token,data):
+    headers = {'token': token, 'content-type': 'application/json; charset=utf8'} 
+    r = requests.post(create_tournament, headers=headers,data=json.dumps(data))
+    return r.json()
 
 
-print create(token2,team_data)
+ 

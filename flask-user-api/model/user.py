@@ -4,7 +4,7 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
 class User(db.Document):
-    email = db.EmailField(unique=True)
+    email = db.EmailField(unique_with='fb_id')
     password_hash = db.StringField()
     fb_id = db.IntField()
     is_activated = db.BooleanField(default=False)
