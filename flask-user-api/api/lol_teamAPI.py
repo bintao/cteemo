@@ -107,10 +107,7 @@ class MylolTeamAPI(Resource):
 		if team.captain == profile:
 			raise InvalidUsage('Captain is not allowed to quit')
 	
-		try:
-			team.update(pull__members=profile,safe=True)
-		except:
-			raise InvalidUsage('Not in team')
+		team.update(pull__members=profile)
 
 		profile.LOLTeam = None
 		profile.save()
@@ -172,10 +169,8 @@ class ManagelolTeamAPI(Resource):
 		member = Profile.objects(id=profileID).first()
 		if member == profile:
 			raise InvalidUsage('Cannot kick yourself')
-		try:
-			success = team.update(pull__members=member,safe=True)
-		except:
-			raise InvalidUsage('Member not found')
+
+		success = team.update(pull__members=member)
 		if success is 0:
 			raise InvalidUsage('Member not found')
 		
@@ -250,10 +245,7 @@ class InviteTeamRequestAPI(Resource):
 
 		team = profile.LOLTeam
 
-		try:
-			success = request.update(pull__requests_list=profile,safe=True)
-		except:
-			raise InvalidUsage('Request is illegal')
+		success = request.update(pull__requests_list=profile)
 		if success is 0 or team is None or team.captain != profile:
 			raise InvalidUsage('Request is illegal') 
 
@@ -281,10 +273,7 @@ class InviteTeamRequestAPI(Resource):
 		if request is None:
 			raise InvalidUsage('Request does not exist')
 
-		try:
-			success = request.update(pull__requests_list=profileID,safe=True)
-		except:
-			raise InvalidUsage('Request is illegal')
+		success = request.update(pull__requests_list=profileID)
 		if success is 0:
 			raise InvalidUsage('Request does not exist')
 			
@@ -317,10 +306,7 @@ class JoinTeamRequestAPI(Resource):
 			raise InvalidUsage('Unauthorized',401)
 		# query the player u want to invite
 		profile = Profile.objects(id=profileID).first()
-		try:
-			success = request.update(pull__requests_list=profile,safe=True)
-		except:
-			raise InvalidUsage('Request not found')
+		success = request.update(pull__requests_list=profile)
 		if success is 0:
 			raise InvalidUsage('Request not found')
 
@@ -347,10 +333,8 @@ class JoinTeamRequestAPI(Resource):
 		request = Request.objects(user=user_id, type='join').only('requests_list').first()
 		if request is None:
 			raise InvalidUsage('Request does not exist')
-		try:
-			success = request.update(pull__requests_list=profileID,safe=True)
-		except:
-			raise InvalidUsage('Request does not exist')
+
+		success = request.update(pull__requests_list=profileID)
 		if success is 0:
 			raise InvalidUsage('Request does not exist')
 
