@@ -7,8 +7,9 @@ class User(db.Document):
     email = db.EmailField(unique=True)
     password_hash = db.StringField()
     fb_id = db.IntField()
+    rongToken = db.StringField()
     is_activated = db.BooleanField(default=False)
-
+    
     def hash_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password)
 
@@ -18,5 +19,6 @@ class User(db.Document):
     def generate_auth_token(self, expiration=360000):
         s = Serializer(current_app.config.get('SECRET_KEY'), expires_in=expiration)
         return s.dumps(str(self.id))
+
 
 

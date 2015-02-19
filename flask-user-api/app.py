@@ -11,6 +11,7 @@ from api.passwordAPI import ChangePasswordAPI, ForgetPasswordAPI
 from api.tournamentAPI import CreateTournamentAPI, JoinTournamentAPI, TournamentResultAPI, ViewTournamentAPI
 from api.reportAPI import LolReportAPI
 from api.postAPI import PlayerPostAPI, TeamPostAPI
+from api.rongcloudAPI import RongcloudAPI
 from util.exception import InvalidUsage
 
 app = Flask(__name__)
@@ -60,6 +61,8 @@ api.add_resource(PlayerPostAPI, '/player_post')
 api.add_resource(TeamPostAPI, '/team_post')
 
 api.add_resource(LolReportAPI, '/match_report/lol')
+
+api.add_resource(RongcloudAPI, '/rong_cloud_token')
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):

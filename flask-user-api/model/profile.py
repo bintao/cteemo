@@ -13,6 +13,13 @@ class Profile(db.Document):
 	LOLTeam = db.ReferenceField('LOLTeam')
 	DOTATeam = db.ReferenceField('DOTATeam')
 	HSTONETeam = db.ReferenceField('HSTONETeam')
+	
+	gender = db.StringField()
+	riotID = db.StringField()
+	lollevel = db.IntField()
+	lolIcon = db.StringField()
+	lolRank = db.StringField()
+
 
 	def checkInfo(self, username, school):
 		if self.username != username or self.school != school:

@@ -1,11 +1,12 @@
 import requests
 import json
 
-login_url = 'http://localhost:5000/login'
+login_url = 'http://54.:5000/login'
 user_data = {'email': 'xzhu15@illinois.edu', 'password': '123'}
 
 def login():
 	r = requests.post(login_url, data=user_data)
+	print r
 	return json.loads(r.content)
 
 def renew_token(token):

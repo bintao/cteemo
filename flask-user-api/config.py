@@ -15,4 +15,7 @@ MAIL_USERNAME = 'ios@cteemo.com'
 MAIL_PASSWORD = 'cteemo2016'
 MAIL_DEFAULT_SENDER = 'no-reply@cteemo.com'
 
+RONG_CLOUD_KEY = 'bmdehs6pdve3s'
+RONG_CLOUD_SECRET = 'dDv1kKuKC01II'
+
 DEBUG = True
