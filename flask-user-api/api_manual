@@ -124,3 +124,5 @@ curl localhost:5000/team_post -X POST --header "token: from login api" -d "conte
 Get Team Post
 curl localhost:5000/team_post -X GET --header "token: from login api"
 
+Get RongCloud Token
+curl localhost:5000/rong_cloud_token -X GET --header "token: from login api"
