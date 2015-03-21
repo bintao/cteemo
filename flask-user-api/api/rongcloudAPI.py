@@ -27,6 +27,10 @@ def rongcloudToken(profile_id):
     if profile is None:
     	raise InvalidUsage("Wrong action",401)
 
+    user = profile.user
+    if user.rongToken is not None:
+        return user.rongToken
+
     token = api.call_api(
     action="/user/getToken",
     params={
@@ -36,8 +40,7 @@ def rongcloudToken(profile_id):
         }
     )
 
-    user = profile.user
-    user.rongToken = token
+    user.rongToken = token['token']
     return token
 
 
