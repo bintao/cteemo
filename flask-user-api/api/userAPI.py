@@ -64,10 +64,10 @@ class LoginAPI(Resource):
         if not user.is_activated:
             raise InvalidUsage('Account not activated')
 
-        rongcloudToken = rongcloudToken(profile.id)
+        rongToken = rongcloudToken(profile.id)
         token = user.generate_auth_token()
         redis_store.set(str(user.id), token)
-        return {'token': token, 'rongcloudToken' : rongcloudToken}
+        return {'token': token, 'rongToken' : rongToken}
 
 
 fbUserParser = reqparse.RequestParser()
@@ -123,10 +123,10 @@ class FBLoginAPI(Resource):
             profile = Profile(user=user)
             profile.save()
 
-        rongcloudToken = rongcloudToken(profile.id)
+        rongToken = rongcloudToken(profile.id)
         token = user.generate_auth_token()
         redis_store.set(str(user.id), token)
-        return {'token': token, 'rongcloudToken' : rongcloudToken}
+        return {'token': token, 'rongToken' : rongToken}
 
 
 activateAccountParser = reqparse.RequestParser()
