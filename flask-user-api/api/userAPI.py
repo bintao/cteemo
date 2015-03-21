@@ -64,6 +64,8 @@ class LoginAPI(Resource):
         if not user.is_activated:
             raise InvalidUsage('Account not activated')
 
+        profile = Profile.objects(user=user.id).first()
+
         rongToken = rongcloudToken(profile.id)
         token = user.generate_auth_token()
         redis_store.set(str(user.id), token)
