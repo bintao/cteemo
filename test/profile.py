@@ -2,7 +2,7 @@ import requests
 import json
 from login_test import login
 
-profile_url = 'http://localhost:5000/profile'
+profile_url = 'http://54.149.235.253:5000/profile'
 profile_data = {
 	'username': 'test',
 	'school': 'UIUC',

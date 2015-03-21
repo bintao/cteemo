@@ -1,7 +1,11 @@
 import requests
 import json
 
+<<<<<<< Updated upstream
 login_url = 'http://54.:5000/login'
+=======
+login_url = 'http://54.149.235.253:5000/login'
+>>>>>>> Stashed changes
 user_data = {'email': 'xzhu15@illinois.edu', 'password': '123'}
 
 def login():
