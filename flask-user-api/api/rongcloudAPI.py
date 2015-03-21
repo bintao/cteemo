@@ -36,7 +36,7 @@ def rongcloudToken(profile_id):
         }
     )
 
-    user = User.objects(id=user_id).first()
+    user = User.objects(id=profile.user).first()
     user.rongToken = token
     return token
 
