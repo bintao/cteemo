@@ -23,13 +23,11 @@ api = ApiClient()
 
 def rongcloudToken(profile_id):
     # load profile 
-    profile =  Profile.objects(id=profile_id).first()
+    profile = Profile.objects(id=profile_id).first()
     if profile is None:
     	raise InvalidUsage("Wrong action",401)
 
     user = profile.user
-    if user.rongToken is not None:
-        return user.rongToken
 
     token = api.call_api(
     action="/user/getToken",
@@ -44,5 +42,20 @@ def rongcloudToken(profile_id):
     user.save()
     return token
 
+def rongRefresh(profile_id):
+    profile = Profile.objects(id=profile_id).first()
+    if profile is None:
+        raise InvalidUsage("Wrong action",401)
+
+    user = profile.user
+
+    self.call_api(
+            action=self.ACTION_USER_REFRESH,
+            params={
+                "userId": profile_id,
+                "name": profile.username,
+                "portraitUri": profile.profile_icon
+            }
+        )
 
     
