@@ -7,6 +7,7 @@ from mongoengine.errors import NotUniqueError, ValidationError
 from model.profile import Profile
 from model.lol_team import LOLTeam
 from model.request import Request
+from api.rongcloudAPI import rongcloudCreateGroup,rongcloudJoinGroup,rongcloudLeaveGroup,rongcloudDismissGroup
 from util.userAuth import auth_required
 from util.serialize import team_serialize, team_search_serialize, requests_list_serialize
 from util.exception import InvalidUsage
@@ -46,6 +47,8 @@ class LolTeamAPI(Resource):
 			raise InvalidUsage(e.message)
 		profile.LOLTeam = team
 		profile.save()
+
+		rongcloudCreateGroup(team.id)
 		return team_serialize(team)
 
 	@auth_required
@@ -64,6 +67,9 @@ class LolTeamAPI(Resource):
 		profile.LOLTeam = None
 		profile.save()
 		team.delete()
+
+		rongcloudDismissGroup(profile.id,team.id)
+
 		return {'status' : 'success'}
 
 class MylolTeamAPI(Resource):
@@ -112,6 +118,8 @@ class MylolTeamAPI(Resource):
 		profile.LOLTeam = None
 		profile.save()
 		team.save()
+
+		rongcloudLeaveGroup(profile.id,team.id)
 
 		return {'status' : 'success'}
 
@@ -177,6 +185,8 @@ class ManagelolTeamAPI(Resource):
 		member.LOLTeam = None
 		team.save()
 		member.save()
+
+		rongcloudLeaveGroup(member.id,team.id)
 		
 		return {'status' : 'success'}
 
@@ -262,6 +272,8 @@ class InviteTeamRequestAPI(Resource):
 		team.save()
 		profile.save()
 
+		rongcloudJoinGroup(profile.id,team.id,teamName)
+
 		return team_serialize(team)
 
 	@auth_required
@@ -322,6 +334,8 @@ class JoinTeamRequestAPI(Resource):
 		profile.LOLTeam = team
 		team.save()
 		profile.save()
+
+		rongcloudJoinGroup(profile.id,team.id,teamName)
 
 		return team_serialize(team)
 

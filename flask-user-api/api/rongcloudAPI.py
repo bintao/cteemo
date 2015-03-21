@@ -2,6 +2,7 @@ from flask import request, abort
 from flask.ext.restful import Resource, reqparse
 from model.profile import Profile
 from model.user import User
+from model.lol_team import LOLTeam
 from util.userAuth import auth_required
 from util.serialize import serialize, profile_search_serialize
 from util.exception import InvalidUsage
@@ -59,4 +60,46 @@ def rongRefresh(profile_id):
             }
         )
 
-    
+def rongcloudCreateGroup(team_id):
+    team = LOLTeam.objects(id=team_id).first()
+    if team is None:
+        raise InvalidUsage("Wrong action",401)
+
+    profile = team.captain
+
+    api.call_api(
+            action="/group/create",
+            params={
+                "userId":profile.id,
+                "groupId":team_id,
+                "groupName":team.teamName
+            }
+        )
+
+def rongcloudJoinGroup(profile_id,team_id,teamName):
+    api.call_api(
+            action="/group/join",
+            params={
+                "userId":profile_id,
+                "groupId":team_id,
+                "groupName":team.teamName
+            }
+        )
+
+def rongcloudLeaveGroup(profile_id,team_id):
+    api.call_api(
+            action="/group/quit",
+            params={
+                "userId":profile_id,
+                "groupId":team_id,
+            }
+        )
+
+def rongcloudDismissGroup(profile_id,team_id):
+    api.call_api(
+            action="/group/dismiss",
+            params={
+                "userId":profile_id,
+                "groupId":team_id,
+            }
+        )   
