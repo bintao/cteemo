@@ -41,6 +41,7 @@ def rongcloudToken(profile_id):
     )
 
     user.rongToken = token['token']
+    user.save()
     return token
 
 
