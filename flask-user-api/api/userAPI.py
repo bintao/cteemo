@@ -45,7 +45,7 @@ class LoginAPI(Resource):
     @auth_required
     def get(self, user_id):
         user = User.objects(id=user_id).first()
-        token = user.generate_auth_token(expiration=360000)
+        token = user.generate_auth_token()
         redis_store.set(user_id, token)
         return {'token': token}
 
@@ -63,7 +63,7 @@ class LoginAPI(Resource):
         if not user.is_activated:
             raise InvalidUsage('Account not activated')
 
-        token = user.generate_auth_token(expiration=360000)
+        token = user.generate_auth_token()
         redis_store.set(str(user.id), token)
         return {'token': token}
 
@@ -92,7 +92,7 @@ class FBUserAPI(Resource):
         except:
             return {'status': 'error', 'message': 'FBname has already existed'}
 
-        token = user.generate_auth_token(expiration=360000)
+        token = user.generate_auth_token()
         redis_store.set(str(user.id), token)
         return ({'status': 'success', 'token': token}, 201)
 
@@ -121,7 +121,7 @@ class FBLoginAPI(Resource):
             profile = Profile(user=user)
             profile.save()
 
-        token = user.generate_auth_token(expiration=360000)
+        token = user.generate_auth_token()
         redis_store.set(str(user.id), token)
         return {'token': token}
 
