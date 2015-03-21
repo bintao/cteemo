@@ -7,6 +7,7 @@ from model import redis_store
 from util.userAuth import auth_required, load_token
 from util.emails import send_activate_account_email
 from util.exception import InvalidUsage 
+from api.rongcloudAPI import rongcloudToken
 import requests 
 
 
@@ -63,9 +64,10 @@ class LoginAPI(Resource):
         if not user.is_activated:
             raise InvalidUsage('Account not activated')
 
+        rongcloudToken = rongcloudToken(profile.id)
         token = user.generate_auth_token()
         redis_store.set(str(user.id), token)
-        return {'token': token}
+        return {'token': token, 'rongcloudToken' : rongcloudToken}
 
 
 fbUserParser = reqparse.RequestParser()
@@ -121,9 +123,10 @@ class FBLoginAPI(Resource):
             profile = Profile(user=user)
             profile.save()
 
+        rongcloudToken = rongcloudToken(profile.id)
         token = user.generate_auth_token()
         redis_store.set(str(user.id), token)
-        return {'token': token}
+        return {'token': token, 'rongcloudToken' : rongcloudToken}
 
 
 activateAccountParser = reqparse.RequestParser()
