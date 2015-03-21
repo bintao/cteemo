@@ -34,7 +34,7 @@ class UserAPI(Resource):
         except NotUniqueError, e:
             raise InvalidUsage(e.message)
 
-        token = user.generate_auth_token(expiration=360000)
+        token = user.generate_auth_token()
         redis_store.set(str(user.id), token)
         send_activate_account_email(email,token)
 

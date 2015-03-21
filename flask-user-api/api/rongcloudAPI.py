@@ -21,16 +21,16 @@ logging.basicConfig(level=logging.INFO)
 api = ApiClient()
 
 
-def rongcloudToken(user_id):
+def rongcloudToken(profile_id):
     # load profile 
-    profile =  Profile.objects(user=user_id).first()
+    profile =  Profile.objects(id=profile_id).first()
     if profile is None:
     	raise InvalidUsage("Wrong action",401)
 
     token = api.call_api(
     action="/user/getToken",
     params={
-        "userId": profile.id,
+        "userId": profile_id,
         "name":profile.username,
         "portraitUri":profile.profile_icon
         }
