@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO)
 api = ApiClient()
 
 
-def rongcloudToken(self, user_id):
+def rongcloudToken(user_id):
     # load profile 
     profile =  Profile.objects(user=user_id).first()
     if profile is None:
