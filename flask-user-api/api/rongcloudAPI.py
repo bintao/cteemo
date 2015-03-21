@@ -50,8 +50,8 @@ def rongRefresh(profile_id):
     user = profile.user
     if user.rongToken is None:
         return rongcloudToken(profile_id)
-    self.call_api(
-            action="/user/getToken",
+    api.call_api(
+            action="/user/refresh",
             params={
                 "userId": profile_id,
                 "name": profile.username,
