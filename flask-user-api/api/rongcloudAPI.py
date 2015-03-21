@@ -48,9 +48,10 @@ def rongRefresh(profile_id):
         raise InvalidUsage("Wrong action",401)
 
     user = profile.user
-
+    if user.rongToken is None:
+        return rongcloudToken(profile_id)
     self.call_api(
-            action=self.ACTION_USER_REFRESH,
+            action="/user/getToken",
             params={
                 "userId": profile_id,
                 "name": profile.username,

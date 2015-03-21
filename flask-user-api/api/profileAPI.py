@@ -50,7 +50,7 @@ class ProfileAPI(Resource):
         profile.dotaID = dotaID
         profile.hstoneID = hstoneID
         profile.save()
-
+        
         rongRefresh(profile.id)
 
         return serialize(profile)
