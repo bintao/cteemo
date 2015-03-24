@@ -17,4 +17,6 @@ from functions.game import update
 from lol.code_generator import lolTournamentCode
 import math
 import boto
+import challonge
 
+challonge.set_credentials("your_challonge_username", "your_api_key")
