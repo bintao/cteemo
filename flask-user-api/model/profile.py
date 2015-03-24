@@ -3,9 +3,8 @@ from model import db
 class Profile(db.Document):
 	id = db.SequenceField(primary_key=True)
 	user = db.ReferenceField('User')
-	username = db.StringField(default='cteemoUser')
-	profile_icon = db.URLField(default=	
-'https://s3-us-west-2.amazonaws.com/profile-icon/123%40gmail.com_images.jpg')
+	username = db.StringField()
+	profile_icon = db.URLField()
 	school = db.StringField()
 	intro = db.StringField(default='Player left nothing here', max_length=200)
 	lolID = db.StringField()
