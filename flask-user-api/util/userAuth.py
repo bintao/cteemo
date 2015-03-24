@@ -8,8 +8,8 @@ def load_token(token):
     s = Serializer(current_app.config.get('SECRET_KEY'))
     try:
         user_id = s.loads(token)
-    except SignatureExpired:
-        abort(401)    # valid token, but expired
+    #except SignatureExpired:
+    #    abort(401)    # valid token, but expired
     except BadSignature:
         abort(401)    # invalid token
     return user_id

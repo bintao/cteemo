@@ -17,7 +17,7 @@ class User(db.Document):
         return bcrypt.check_password_hash(self.password_hash, password)
 
     def generate_auth_token(self):
-        s = Serializer(current_app.config.get('SECRET_KEY'),expires_in=None)
+        s = Serializer(current_app.config.get('SECRET_KEY'),expires_in=0)
         return s.dumps(str(self.id))
 
 
