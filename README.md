@@ -1,2 +1,2 @@
 # cteemo
-*website http://www.cteemo.com/
+* website http://www.cteemo.com/
