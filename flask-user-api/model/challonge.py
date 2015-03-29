@@ -3,6 +3,6 @@ from datetime import datetime
 
 class Challonge(db.Document):
 	id = db.SequenceField(primary_key=True)
-	name = db.StringField(required=True)
-	tournament_type = db.StringField(default="single elimination")
+	tournamentName = db.StringField(required=True)
+	creator = db.ReferenceField('Profile')
 	

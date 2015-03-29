@@ -124,5 +124,17 @@ curl localhost:5000/team_post -X POST --header "token: from login api" -d "conte
 Get Team Post
 curl localhost:5000/team_post -X GET --header "token: from login api"
 
-Get RongCloud Token
-curl localhost:5000/rong_cloud_token -X GET --header "token: from login api"
+Create Challonge
+url : /challonge, method : post, parameters : tournamentName, tournamentUrl, tournamentId
+
+View Challonge Tournament
+url : /challonge, method : get, parameters : tournamentId
+
+Join Challonge
+url : /challonge_join, method : post, parameters : tournamentId
+
+Show Challonger
+url : /challonge_join, method : get, parameters : tournamentId, participantId
+
+Get Tournament Code (View Get Tournament Code for your match)
+url : /challonge_result, method : get, parameters : tournamentId, tournamentName, matchId

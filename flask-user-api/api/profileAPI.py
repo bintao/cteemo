@@ -19,6 +19,7 @@ profileParser.add_argument('dotaID', type=str)
 profileParser.add_argument('hstoneID', type=str)
 profileParser.add_argument('profileID', type=int)
 profileParser.add_argument('page', type=int)
+profileParser.add_argument('gender', type=str)
 
 class ProfileAPI(Resource):
     @auth_required
@@ -39,6 +40,7 @@ class ProfileAPI(Resource):
         lolID = args['lolID']
         dotaID = args['dotaID']
         hstoneID = args['hstoneID']
+        gender = args['gender']
 
         profile = Profile.objects(user=user_id).first()
         if profile is None:
@@ -49,6 +51,7 @@ class ProfileAPI(Resource):
         profile.lolID = lolID
         profile.dotaID = dotaID
         profile.hstoneID = hstoneID
+        profile.gender = gender
         profile.save()
         
         rongRefresh(profile.id)
