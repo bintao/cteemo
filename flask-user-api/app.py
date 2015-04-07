@@ -64,7 +64,7 @@ api.add_resource(LolReportAPI, '/match_report/lol')
 
 api.add_resource(ChallongeAPI, '/challonge')
 api.add_resource(ChallongeJoinAPI, '/challonge_join')
-api.add_resource(ChallongeResultAPI, 'challonge_result')
+api.add_resource(ChallongeResultAPI, '/challonge_result')
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
