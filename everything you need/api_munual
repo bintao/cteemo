@@ -13,7 +13,6 @@ curl --form file=@icon.png --form press=OK 54.149.235.253:4000/upload_news_image
 Get News List
 curl 54.149.235.253:4000/news_list/tagA+tagB/page #
 
-
 Search News List
 curl 54.149.235.253:4000/search_news -X POST -d "search=test" -d "tags=[]" -d "page=0"
 
@@ -28,6 +27,5 @@ curl 54.149.235.253:4000/comment -X GET --header "token: from login api" -d "tit
 
 Load Article:
 curl 54.149.235.253:4000/load_article/http://www.engadget.com/2015/01/01/us-supreme-court-moving-to-digital-filing-system-in-2016/ -X GET
-
 
 S3_KEY=mykey S3_SECRET=mysecret application
