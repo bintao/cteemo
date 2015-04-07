@@ -12,8 +12,8 @@ import unittest
 import logging
 from server_sdk_python.rong import ApiClient
 
-app_key = "bmdehs6pdve3s"
-app_secret = "dDv1kKuKC01II"
+app_key = "pkfcgjstfmcl8"
+app_secret = "dwGJ4fYYGJ"
 os.environ.setdefault('rongcloud_app_key', app_key)
 os.environ.setdefault('rongcloud_app_secret', app_secret)
 
